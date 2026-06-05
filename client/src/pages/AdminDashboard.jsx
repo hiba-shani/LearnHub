@@ -273,19 +273,102 @@ function AdminDashboard() {
         ))}
       </div>
 
-      {/* COURSES */}
-      <h2 className="text-2xl font-bold mb-4">Courses</h2>
-      <div className="grid gap-4">
-        {courses.map(course => (
-          <div key={course._id} className="border p-4 rounded-xl flex justify-between items-center bg-white shadow-sm">
-            <div><h3 className="font-bold">{course.title}</h3><p className="text-indigo-600">₹{course.price}</p></div>
-            <div className="flex gap-2">
-              <button onClick={() => navigate(`/edit-course/${course._id}`)} className="bg-amber-500 text-white px-4 py-2 rounded-lg">Edit</button>
-              <button onClick={() => deleteCourse(course._id)} className="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
-            </div>
-          </div>
-        ))}
+     {/* COURSES */}
+<h2 className="text-2xl font-bold mb-4">
+  Courses
+</h2>
+
+<div className="grid gap-4">
+
+  {courses.map((course) => (
+
+    <div
+      key={course._id}
+      className="
+      border
+      p-4
+      rounded-xl
+      flex
+      justify-between
+      items-center
+      bg-white
+      shadow-sm
+      "
+    >
+
+      <div>
+
+        <h3 className="font-bold">
+          {course.title}
+        </h3>
+
+        <p className="text-indigo-600">
+          ₹{course.price}
+        </p>
+
+        <p className="text-sm text-gray-500">
+          {course.category}
+        </p>
+
       </div>
+
+      <div className="flex gap-2 flex-wrap">
+
+        <button
+          onClick={() =>
+            navigate(`/add-lesson/${course._id}`)
+          }
+          className="
+          bg-green-600
+          text-white
+          px-4
+          py-2
+          rounded-lg
+          hover:bg-green-700
+          "
+        >
+          Add Lesson
+        </button>
+
+        <button
+          onClick={() =>
+            navigate(`/edit-course/${course._id}`)
+          }
+          className="
+          bg-amber-500
+          text-white
+          px-4
+          py-2
+          rounded-lg
+          hover:bg-amber-600
+          "
+        >
+          Edit
+        </button>
+
+        <button
+          onClick={() =>
+            deleteCourse(course._id)
+          }
+          className="
+          bg-red-600
+          text-white
+          px-4
+          py-2
+          rounded-lg
+          hover:bg-red-700
+          "
+        >
+          Delete
+        </button>
+
+      </div>
+
+    </div>
+
+  ))}
+
+</div>
       <div className="flex items-center gap-4 mt-8 justify-center">
         <button
           disabled={page === 1}
