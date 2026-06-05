@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"; 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; 
 
 function InstructorDashboard() {
   const [courses, setCourses] = useState([]);
@@ -46,30 +47,50 @@ function InstructorDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // DELETE COURSE
+  // DELETE COURSE 
   const deleteCourse = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure want to delete this course?"
-    );
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this course? This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#EF4444", // Red button
+      cancelButtonColor: "#6B7280", // Gray button
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(
+            `${API}/api/courses/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
 
-    if (!confirmDelete) return;
+          
+          Swal.fire({
+            title: "Deleted!",
+            text: "Course has been deleted successfully 🗑️",
+            icon: "success",
+            confirmButtonColor: "#4F46E5"
+          });
 
-    try {
-      await axios.delete(
-        `${API}/api/courses/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          fetchData(); 
+        } catch (error) {
+          console.log(error);
+          
+          Swal.fire({
+            title: "Delete Failed",
+            text: error.response?.data?.message || "Could not delete the course.",
+            icon: "error",
+            confirmButtonColor: "#EF4444"
+          });
         }
-      );
-
-      alert("Course Deleted 🗑️");
-      fetchData();
-    } catch (error) {
-      console.log(error);
-      alert("Delete failed ❌");
-    }
+      }
+    });
   };
 
   if (!stats) {

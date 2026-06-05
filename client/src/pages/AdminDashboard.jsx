@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
+import Swal from "sweetalert2"; 
 import { Link, useNavigate } from "react-router-dom";
 
 function AdminDashboard() {
@@ -14,13 +14,11 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const API = import.meta.env.VITE_API_URL;
 
-  // COURSES ഫെച്ച് ചെയ്യാൻ മാത്രം പേജ് ഡിപെൻഡൻസി ഉപയോഗിക്കുക
   useEffect(() => {
     fetchCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  // ആദ്യ തവണ ലോഡ് ചെയ്യുമ്പോൾ മാത്രം സ്റ്റാറ്റ്സും പെൻഡിങ് ലിസ്റ്റും ഫെച്ച് ചെയ്യുക
   useEffect(() => {
     fetchStats();
     fetchPending();
@@ -87,7 +85,12 @@ function AdminDashboard() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      Swal.fire("Approved", "Instructor approved successfully", "success");
+      Swal.fire({
+        title: "Approved!",
+        text: "Instructor approved successfully.",
+        icon: "success",
+        confirmButtonColor: "#10B981"
+      });
       fetchStats();
       fetchPending();
     } catch (error) {
@@ -102,7 +105,12 @@ function AdminDashboard() {
         `${API}/api/admin/reject-instructor/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      Swal.fire("Rejected", "Instructor rejected successfully", "success");
+      Swal.fire({
+        title: "Rejected!",
+        text: "Instructor rejected successfully.",
+        icon: "success",
+        confirmButtonColor: "#EF4444"
+      });
       fetchPending();
     } catch (error) {
       console.log(error);
@@ -139,23 +147,45 @@ function AdminDashboard() {
     }
   };
 
-  // DELETE COURSE
+  
   const deleteCourse = async (id) => {
-    const confirmDelete = window.confirm("Are you sure?");
-    if (!confirmDelete) return;
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this! All lessons under this course might be affected.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#EF4444", // Red button
+      cancelButtonColor: "#6B7280", // Gray button
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(
+            `${API}/api/admin/course/${id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          
+          Swal.fire({
+            title: "Deleted!",
+            text: "Course has been deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#4F46E5"
+          });
 
-    try {
-      await axios.delete(
-        `${API}/api/admin/course/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Course deleted ✅");
-      fetchStats();
-      fetchCourses(); 
-    } catch (error) {
-      console.log(error);
-      alert("Delete failed ❌");
-    }
+          fetchStats();
+          fetchCourses(); 
+        } catch (error) {
+          console.log(error);
+          Swal.fire({
+            title: "Delete Failed",
+            text: error.response?.data?.message || "Could not delete the course.",
+            icon: "error",
+            confirmButtonColor: "#EF4444"
+          });
+        }
+      }
+    });
   };
 
   if (!stats) return <p className="text-center mt-20">Loading...</p>;
@@ -220,7 +250,6 @@ function AdminDashboard() {
         </div>
       )}
 
-      
       <h2 className="text-2xl font-bold mt-10 mb-4 text-red-600">Quick User Management</h2>
       <div className="bg-gray-50 p-4 rounded-xl border mb-10 flex flex-wrap gap-4 items-center">
         <p className="text-sm text-gray-600 mr-2">To block/unblock a specific user quickly, please visit the main Users page:</p>

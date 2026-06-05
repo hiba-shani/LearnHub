@@ -1,7 +1,7 @@
-
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; 
 
 function Register() {
   const [name, setName] = useState("");
@@ -18,6 +18,17 @@ function Register() {
   const API = import.meta.env.VITE_API_URL;
 
   const handleRegister = async () => {
+    
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      Swal.fire({
+        title: "Missing Information",
+        text: "Please fill in all fields before registering.",
+        icon: "warning",
+        confirmButtonColor: "#16A34A" // Green-600
+      });
+      return;
+    }
+
     try {
       setLoading(true);
       setErrors({});
@@ -29,18 +40,31 @@ function Register() {
         role,
       });
 
-      alert("OTP sent to your email 📩");
-
-      navigate("/verify-otp", {
-        state: { email },
+      
+      Swal.fire({
+        title: "OTP Sent! 📩",
+        text: "A one-time password has been sent to your email address. Please verify.",
+        icon: "success",
+        confirmButtonColor: "#16A34A"
+      }).then(() => {
+        navigate("/verify-otp", {
+          state: { email },
+        });
       });
+
     } catch (err) {
+      console.log(err);
+      
       if (err.response?.data?.errors) {
         setErrors(err.response.data.errors);
       } else {
-        alert(
-          err.response?.data?.message || "Register failed ❌"
-        );
+       
+        Swal.fire({
+          title: "Registration Failed",
+          text: err.response?.data?.message || "Something went wrong. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#EF4444"
+        });
       }
     } finally {
       setLoading(false);
@@ -48,85 +72,85 @@ function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-
-      <div className="bg-white p-6 shadow-lg rounded w-80">
-
-        <h2 className="text-2xl font-bold mb-4">
+    <div className="flex justify-center items-center h-screen bg-gray-100 px-4">
+      <div className="bg-white p-8 shadow-xl rounded-2xl w-full max-w-sm">
+        <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
           Register
         </h2>
 
-        {/* NAME */}
-        <input
-          type="text"
-          placeholder="Name"
-          className={`border w-full mb-1 p-2 ${
-            errors.name ? "border-red-500" : ""
-          }`}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        {errors.name && (
-          <p className="text-red-500 text-sm mb-2">
-            {errors.name}
-          </p>
-        )}
+        <div className="space-y-4">
+          {/* NAME */}
+          <div>
+            <input
+              type="text"
+              placeholder="Name"
+              className={`border w-full p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500 transition ${
+                errors.name ? "border-red-500 focus:ring-red-500" : "border-gray-300"
+              }`}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-1 ml-1">{errors.name}</p>
+            )}
+          </div>
 
-        {/* EMAIL */}
-        <input
-          type="email"
-          placeholder="Email"
-          className={`border w-full mb-1 p-2 ${
-            errors.email ? "border-red-500" : ""
-          }`}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        {errors.email && (
-          <p className="text-red-500 text-sm mb-2">
-            {errors.email}
-          </p>
-        )}
+          {/* EMAIL */}
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              className={`border w-full p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500 transition ${
+                errors.email ? "border-red-500 focus:ring-red-500" : "border-gray-300"
+              }`}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1 ml-1">{errors.email}</p>
+            )}
+          </div>
 
-        {/* PASSWORD */}
-        <input
-          type="password"
-          placeholder="Password"
-          className={`border w-full mb-1 p-2 ${
-            errors.password ? "border-red-500" : ""
-          }`}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {errors.password && (
-          <p className="text-red-500 text-sm mb-2">
-            {errors.password}
-          </p>
-        )}
+          {/* PASSWORD */}
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              className={`border w-full p-3 rounded-xl outline-none focus:ring-2 focus:ring-green-500 transition ${
+                errors.password ? "border-red-500 focus:ring-red-500" : "border-gray-300"
+              }`}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1 ml-1">{errors.password}</p>
+            )}
+          </div>
 
-        {/* ROLE */}
-        <select
-          className="border p-2 w-full mb-3"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-        >
-          <option value="student">Student</option>
-          <option value="instructor">Instructor</option>
-        </select>
+          {/* ROLE */}
+          <div>
+            <select
+              className="border border-gray-300 p-3 w-full rounded-xl outline-none focus:ring-2 focus:ring-green-500 transition bg-white"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="student">Student</option>
+              <option value="instructor">Instructor</option>
+            </select>
+          </div>
 
-        {/* BUTTON */}
-        <button
-          onClick={handleRegister}
-          disabled={loading}
-          className="bg-green-600 text-white w-full py-2 rounded"
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
-
+          {/* BUTTON */}
+          <button
+            onClick={handleRegister}
+            disabled={loading}
+            className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white py-3 rounded-xl font-bold text-lg transition mt-2 shadow-md"
+          >
+            {loading ? "Registering..." : "Register"}
+          </button>
+        </div>
       </div>
     </div>
   );
 }
-
 
 export default Register;

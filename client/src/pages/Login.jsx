@@ -1,7 +1,7 @@
-
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from "sweetalert2"; 
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,6 +14,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrors({});
 
     try {
       const res = await axios.post(
@@ -27,8 +28,7 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      alert("Login successful ✅");
-
+      
       if (res.data.user.role === "admin") {
         navigate("/admin");
       } else {
@@ -38,17 +38,47 @@ function Login() {
     } catch (err) {
       if (err.response?.data?.errors) {
         const validationErrors = {};
-
         Object.keys(err.response.data.errors).forEach((key) => {
           validationErrors[key] = err.response.data.errors[key];
         });
-
         setErrors(validationErrors);
 
       } else {
-        alert(
-          err.response?.data?.message || "Login failed ❌"
-        );
+        
+        const errorMessage = err.response?.data?.message || "";
+
+       
+        if (
+          errorMessage.toLowerCase().includes("not found") || 
+          errorMessage.toLowerCase().includes("exist") ||
+          err.response?.status === 404
+        ) {
+          
+          
+          Swal.fire({
+            title: "Account Not Found!",
+            text: "User does not exist. Please register first to continue.",
+            icon: "error",
+            showCancelButton: true,
+            confirmButtonColor: "#2563EB", 
+            cancelButtonColor: "#EF4444",
+            confirmButtonText: "Go to Register",
+            cancelButtonText: "Try Again"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/register"); 
+            }
+          });
+
+        } else {
+          
+          Swal.fire({
+            title: "Login Failed",
+            text: errorMessage || "Something went wrong. Please try again.",
+            icon: "error",
+            confirmButtonColor: "#2563EB",
+          });
+        }
       }
 
     } finally {
@@ -105,7 +135,7 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -114,7 +144,7 @@ function Login() {
 
         <p className="text-sm text-center mt-4">
           Don't have an account?{" "}
-          <Link to="/register" className="text-blue-600">
+          <Link to="/register" className="text-blue-600 hover:underline">
             Register
           </Link>
         </p>
@@ -123,6 +153,5 @@ function Login() {
     </div>
   );
 }
-
 
 export default Login;

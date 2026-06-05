@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa"; 
+import Swal from "sweetalert2"; 
 
 function CourseDetails() {
   const { id } = useParams();
@@ -67,31 +68,55 @@ function CourseDetails() {
         }
       );
 
-      
       console.log("Backend Order Response:", res.data);
-
    
       const orderData = res.data.order ? res.data.order : res.data;
 
+      
+      let finalAmount = orderData.amount;
+      if (finalAmount < 1000) { 
+        finalAmount = finalAmount * 100;
+      }
+
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: Number(orderData.amount),      
+        amount: Number(finalAmount),      
         currency: orderData.currency  || "INR", 
         order_id: orderData.id,       
         name: "LearnHub",
         description: course.title,
         handler: async function (response) { 
-          await axios.post(
-            `${API}/api/courses/${id}/enroll`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
+          try {
+            await axios.post(
+              `${API}/api/courses/${id}/enroll`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
               }
-            }
-          );
-          alert("Payment Successful 🎉");
-          navigate(`/lessons/${id}`);
+            );
+
+            
+            Swal.fire({
+              title: "Payment Successful! 🎉",
+              text: "You have been successfully enrolled in this course.",
+              icon: "success",
+              confirmButtonColor: "#4F46E5",
+              confirmButtonText: "Go to Lessons"
+            }).then(() => {
+              navigate(`/lessons/${id}`);
+            });
+
+          } catch (enrollError) {
+            console.log(enrollError);
+            Swal.fire({
+              title: "Enrollment Failed",
+              text: "Payment received, but enrollment failed. Contact support.",
+              icon: "error",
+              confirmButtonColor: "#EF4444"
+            });
+          }
         },
         prefill: {
           name: user?.name || "Test User",
@@ -106,7 +131,15 @@ function CourseDetails() {
       rzp.open();
     } catch (error) {
       console.log(error);
-      alert("Payment Failed");
+      
+    
+      Swal.fire({
+        title: "Payment Cancelled/Failed",
+        text: error.response?.data?.message || "Could not complete the transaction. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#EF4444",
+        confirmButtonText: "Close"
+      });
     }
   };
 

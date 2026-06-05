@@ -1,4 +1,3 @@
-
 import {
   FaEnvelope,
   FaPhoneAlt,
@@ -8,6 +7,7 @@ import {
 
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2"; 
 
 function Contact() {
 
@@ -32,7 +32,6 @@ function Contact() {
     e.preventDefault();
 
     try {
-
       setLoading(true);
 
       const res = await axios.post(
@@ -40,7 +39,13 @@ function Contact() {
         formData
       );
 
-      alert(res.data.message);
+    
+      Swal.fire({
+        title: "Message Sent! 🚀",
+        text: res.data.message || "Thank you for contacting us. We will get back to you soon.",
+        icon: "success",
+        confirmButtonColor: "#4F46E5"
+      });
 
       setFormData({
         name: "",
@@ -49,13 +54,15 @@ function Contact() {
       });
 
     } catch (error) {
-
       console.log(error);
 
-      alert(
-        error.response?.data?.message ||
-        "Failed to send message"
-      );
+      
+      Swal.fire({
+        title: "Submission Failed",
+        text: error.response?.data?.message || "Failed to send message. Please try again later.",
+        icon: "error",
+        confirmButtonColor: "#EF4444"
+      });
 
     } finally {
       setLoading(false);
@@ -150,7 +157,7 @@ function Contact() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl text-lg font-semibold flex justify-center items-center gap-3"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl text-lg font-semibold flex justify-center items-center gap-3 transition"
             >
               <FaPaperPlane />
               {loading ? "Sending..." : "Send Message"}
@@ -165,6 +172,5 @@ function Contact() {
     </div>
   );
 }
-
 
 export default Contact;

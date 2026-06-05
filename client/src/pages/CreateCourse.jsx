@@ -1,6 +1,6 @@
-
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function CreateCourse() {
 
@@ -20,7 +20,6 @@ function CreateCourse() {
     e.preventDefault();
 
     try {
-
       const formData = new FormData();
       formData.append("title", title);
       formData.append("shortDescription", shortDescription);
@@ -43,9 +42,16 @@ function CreateCourse() {
       );
 
       console.log(res.data);
-      alert("Course created 🎉");
 
-      // optional reset
+      
+      Swal.fire({
+        title: "Course Created! 🎉",
+        text: "The new course has been added successfully.",
+        icon: "success",
+        confirmButtonColor: "#2563EB"
+      });
+
+      
       setTitle("");
       setShortDescription("");
       setLongDescription("");
@@ -54,16 +60,26 @@ function CreateCourse() {
       setCategory("");
       setImage(null);
 
+     
+      document.getElementById("course-image-input").value = "";
+
     } catch (error) {
       console.log(error);
-      alert("Error creating course ❌");
+
+     
+      Swal.fire({
+        title: "Error Creating Course",
+        text: error.response?.data?.message || "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#EF4444"
+      });
     }
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-2xl mx-auto bg-white shadow rounded-xl mt-10">
 
-      <h1 className="text-2xl font-bold mb-4">
+      <h1 className="text-2xl font-bold mb-6">
         Create Course
       </h1>
 
@@ -71,7 +87,7 @@ function CreateCourse() {
 
         <input
           placeholder="Title"
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={(e) => setTitle(e.target.value)}
           value={title}
           required
@@ -79,7 +95,7 @@ function CreateCourse() {
 
         <textarea
           placeholder="Short Description"
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows="3"
           onChange={(e) => setShortDescription(e.target.value)}
           value={shortDescription}
@@ -87,7 +103,7 @@ function CreateCourse() {
 
         <textarea
           placeholder="Long Description"
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows="7"
           onChange={(e) => setLongDescription(e.target.value)}
           value={longDescription}
@@ -95,7 +111,7 @@ function CreateCourse() {
 
         <input
           placeholder="Instructor Name"
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={(e) => setInstructorName(e.target.value)}
           value={instructorName}
         />
@@ -103,7 +119,7 @@ function CreateCourse() {
         <input
           placeholder="Price"
           type="number"
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={(e) => setPrice(e.target.value)}
           value={price}
           required
@@ -111,20 +127,27 @@ function CreateCourse() {
 
         <input
           placeholder="Category"
-          className="border p-2 w-full"
+          className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={(e) => setCategory(e.target.value)}
           value={category}
           required
         />
 
-        <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}
-          required
-        />
+      
+        <div className="flex flex-col space-y-1">
+          <label className="text-sm font-semibold text-gray-600">Course Cover Image:</label>
+          <input
+            id="course-image-input"
+            type="file"
+            accept="image/*"
+            className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            onChange={(e) => setImage(e.target.files[0])}
+            required
+          />
+        </div>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">
-          Create
+        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded transition mt-4">
+          Create Course
         </button>
 
       </form>
@@ -132,6 +155,5 @@ function CreateCourse() {
     </div>
   );
 }
-
 
 export default CreateCourse;
