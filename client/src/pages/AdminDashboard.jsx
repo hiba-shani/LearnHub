@@ -213,10 +213,12 @@ function AdminDashboard() {
           <p className="text-3xl font-bold mt-2">{stats.totalCourses}</p>
         </div>
 
-        <div className="bg-purple-500 text-white p-6 rounded-2xl shadow">
-          <h2 className="text-lg opacity-90">Revenue</h2>
-          <p className="text-3xl font-bold mt-2">₹{stats.revenue}</p>
-        </div>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+  <p className="text-gray-500 text-sm font-medium">Total Revenue</p>
+  <h3 className="text-3xl font-bold text-indigo-600 mt-2">
+    ₹{stats?.revenue || 0}
+  </h3>
+</div>
       </div>
 
       {/* PENDING INSTRUCTORS LIST */}

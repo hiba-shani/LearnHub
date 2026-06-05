@@ -2,7 +2,7 @@
 const User = require("../models/User");
 const Course = require("../models/Course");
 
-const transEmailApi=require("../config/brevo")
+const transEmailApi = require("../config/brevo")
 // const transporter=require("../config/email")
 
 
@@ -25,13 +25,20 @@ exports.getStats = async (req, res) => {
     const totalCourses = await Course.countDocuments();
 
     //  Revenue
+
     const allCourses = await Course.find();
 
-    const revenue = allCourses.reduce(
-      (acc, course) => acc + Number(course.price),
-      0
-    );
+    let revenue = 0;
 
+    for (const course of allCourses) {
+
+      const enrolledStudents = await User.find({
+        enrolledCourses: course._id,
+        role: "student"
+      });
+
+      revenue += enrolledStudents.length * Number(course.price);
+    }
     //  Enrollments
     const users = await User.find();
 
@@ -66,7 +73,7 @@ exports.getStats = async (req, res) => {
 
     );
 
-   
+
     const recentUsers = await User.find()
       .sort({ createdAt: -1 })
       .limit(5);
@@ -136,31 +143,31 @@ exports.approveInstructor = async (req, res) => {
     user.status = "approved";
     await user.save();
 
-    
-//     await transporter.sendMail({
-//   from: process.env.EMAIL,
-//   to: user.email,
-//   subject: "Instructor Approved",
-//   html: `
-//     <h2>Congratulations ${user.name}</h2>
-//     <p>Your instructor account has been approved.</p>
-//     <p>You can now login and create courses.</p>
-//   `,
-// });
 
-await tranEmailApi.sendTransacEmail({
-  sender: {
-    email: process.env.EMAIL,
-    name: "LearnHub",
-  },
-  to: [{ email: user.email }],
-  subject: "Instructor Approved",
-  htmlContent: `
+    //     await transporter.sendMail({
+    //   from: process.env.EMAIL,
+    //   to: user.email,
+    //   subject: "Instructor Approved",
+    //   html: `
+    //     <h2>Congratulations ${user.name}</h2>
+    //     <p>Your instructor account has been approved.</p>
+    //     <p>You can now login and create courses.</p>
+    //   `,
+    // });
+
+    await tranEmailApi.sendTransacEmail({
+      sender: {
+        email: process.env.EMAIL,
+        name: "LearnHub",
+      },
+      to: [{ email: user.email }],
+      subject: "Instructor Approved",
+      htmlContent: `
     <h2>Congratulations ${user.name}</h2>
     <p>Your instructor account has been approved.</p>
     <p>You can now login and create courses.</p>
   `,
-});
+    });
 
     res.json({
       message: "Instructor approved successfully",
@@ -180,31 +187,31 @@ exports.rejectInstructor = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    
-//     await transporter.sendMail({
-//   from: process.env.EMAIL,
-//   to: user.email,
-//   subject: "Instructor Request Rejected",
-//   html: `
-//     <h2>Hello ${user.name}</h2>
-//     <p>Your instructor request has been rejected by admin.</p>
-//     <p>Please contact support for more details.</p>
-//   `,
-// });
 
-await tranEmailApi.sendTransacEmail({
-  sender: {
-    email: process.env.EMAIL,
-    name: "LearnHub",
-  },
-  to: [{ email: user.email }],
-  subject: "Instructor Request Rejected",
-  htmlContent: `
+    //     await transporter.sendMail({
+    //   from: process.env.EMAIL,
+    //   to: user.email,
+    //   subject: "Instructor Request Rejected",
+    //   html: `
+    //     <h2>Hello ${user.name}</h2>
+    //     <p>Your instructor request has been rejected by admin.</p>
+    //     <p>Please contact support for more details.</p>
+    //   `,
+    // });
+
+    await tranEmailApi.sendTransacEmail({
+      sender: {
+        email: process.env.EMAIL,
+        name: "LearnHub",
+      },
+      to: [{ email: user.email }],
+      subject: "Instructor Request Rejected",
+      htmlContent: `
     <h2>Hello ${user.name}</h2>
     <p>Your instructor request has been rejected by admin.</p>
     <p>Please contact support for more details.</p>
   `,
-});
+    });
 
     await User.findByIdAndDelete(req.params.id);
 
