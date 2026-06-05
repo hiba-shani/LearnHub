@@ -1064,16 +1064,21 @@ exports.addReview = async (req, res) => {
     // CHECK ENROLLED
 
     const isEnrolled = user.enrolledCourses.some(
-      (c) => c.toString() === req.params.id
-    );
+  (c) => c.toString() === req.params.id
+);
 
-    if (!isEnrolled) {
+const isOwner =
+  course.instructor.toString() ===
+  req.user.id.toString();
 
-      return res.status(400).json({
-        message: "Enroll to add review"
-      });
+const isAdmin =
+  req.user.role === "admin";
 
-    }
+if (!isEnrolled && !isOwner && !isAdmin) {
+  return res.status(400).json({
+    message: "Enroll to add review"
+  });
+}
 
     // CHECK ALREADY REVIEWED
 
