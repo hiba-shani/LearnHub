@@ -393,76 +393,55 @@ exports.getCourseById = async (req, res) => {
     }
 }
 
-exports.updateCourse = async (
-  req,
-  res
-) => {
 
+exports.updateCourse = async (req, res) => {
   try {
-
     const { id } = req.params;
-
     const course = await Course.findById(id);
 
     if (!course) {
-
       return res.status(404).json({
         message: "Course not found"
       });
-
     }
 
     // ONLY OWNER INSTRUCTOR OR ADMIN
-
     if (
-
       req.user.role === "instructor" &&
-
-      course.instructor.toString() !==
-      req.user.id.toString()
-
+      course.instructor.toString() !== req.user.id.toString()
     ) {
-
       return res.status(403).json({
-        message:
-          "You can edit only your courses"
+        message: "You can edit only your courses"
       });
-
     }
 
-    const updatedCourse =
-      await Course.findByIdAndUpdate(
+   
+    let updateData = { ...req.body };
 
-        id,
+    
+    if (req.file) {
+      updateData.image = req.file.filename; 
+      updateData.p = req.file.filename; 
+    }
 
-        req.body,
-
-        {
-          new: true
-        }
-
-      );
+    const updatedCourse = await Course.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
 
     res.json({
-
-      message: "Course updated successfully",
-
+      message: "Course updated successfully 🎉",
       updatedCourse
-
     });
 
   } catch (error) {
-
     console.log(error);
-
     res.status(500).json({
       error: error.message
     });
-
   }
-
 };
-
 
 
 
