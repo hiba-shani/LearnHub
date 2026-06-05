@@ -162,7 +162,7 @@ function InstructorDashboard() {
               <div className="flex gap-2 mt-4 flex-wrap">
                 <button
                   onClick={() =>
-                    navigate(`/create-lesson/${course._id}`)
+                    navigate(`/add-lesson/${course._id}`)
                   }
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
