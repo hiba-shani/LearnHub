@@ -503,6 +503,7 @@ exports.deleteCourse = async (
 };
 exports.enrollCourses = async (req, res) => {
   try {
+
     const courseId = req.params.id;
     const userId = req.user.id;
 
@@ -511,29 +512,67 @@ exports.enrollCourses = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({
+        message: "Course not found"
+      });
+    }
+
+    // ADMIN CANNOT BUY
+    if (req.user.role === "admin") {
+      return res.status(400).json({
+        message: "Admin cannot purchase courses"
+      });
+    }
+
+    // INSTRUCTOR CANNOT BUY OWN COURSE
+    if (
+      course.instructor.toString() ===
+      userId.toString()
+    ) {
+      return res.status(400).json({
+        message: "You cannot purchase your own course"
+      });
     }
 
     if (!user.enrolledCourses) {
       user.enrolledCourses = [];
     }
 
-    const alreadyEnrolled = user.enrolledCourses.some(
-      (id) => id.toString() === courseId
-    );
+    const alreadyEnrolled =
+      user.enrolledCourses.some(
+        (id) => id.toString() === courseId
+      );
 
     if (alreadyEnrolled) {
-      return res.status(400).json({ message: "Already Enrolled" });
+      return res.status(400).json({
+        message: "Already Enrolled"
+      });
     }
 
     user.enrolledCourses.push(courseId);
+
     await user.save();
 
-    res.json({ message: "Enrolled Successfully 🎉" });
+    res.json({
+      message: "Enrolled Successfully 🎉"
+    });
 
   } catch (error) {
+
     console.log("ERROR:", error);
-    res.status(500).json({ message: error.message });
+
+    res.status(500).json({
+      message: error.message
+    });
+
   }
 };
 
@@ -1290,7 +1329,8 @@ exports.getInstructorStats = async (req, res) => {
     for (const course of courses) {
 
       const students = await User.countDocuments({
-        enrolledCourses: course._id
+        enrolledCourses: course._id,
+        role:"student"
       });
 
       totalStudents += students;

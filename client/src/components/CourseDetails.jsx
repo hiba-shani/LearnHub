@@ -89,38 +89,59 @@ function CourseDetails() {
         order_id: orderData.id,       
         name: "LearnHub",
         description: course.title,
-        handler: async function (response) { 
-          try {
-            await axios.post(
-              `${API}/api/courses/${id}/enroll`,
-              {},
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
-              }
-            );
+       handler: async function (response) {
 
-            Swal.fire({
-              title: "Payment Successful! 🎉",
-              text: "You have been successfully enrolled in this course.",
-              icon: "success",
-              confirmButtonColor: "#4F46E5",
-              confirmButtonText: "Go to Lessons"
-            }).then(() => {
-              navigate(`/lessons/${id}`);
-            });
+  try {
 
-          } catch (enrollError) {
-            console.log(enrollError);
-            Swal.fire({
-              title: "Enrollment Failed",
-              text: "Payment received, but enrollment failed. Contact support.",
-              icon: "error",
-              confirmButtonColor: "#EF4444"
-            });
-          }
-        },
+    // SAVE PAYMENT
+    await axios.post(
+       `${API}/api/payment/success`,
+      {
+        paymentId: response.razorpay_payment_id,
+        courseId: id,
+        amount: course.price
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    // ENROLL USER
+    await axios.post(
+      `${API}/api/courses/${id}/enroll`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    Swal.fire({
+      title: "Payment Successful! 🎉",
+      text: "You have been successfully enrolled in this course.",
+      icon: "success",
+      confirmButtonColor: "#4F46E5",
+      confirmButtonText: "Go to Lessons"
+    }).then(() => {
+      navigate(`/lessons/${id}`);
+    });
+
+  } catch (enrollError) {
+
+    console.log(enrollError);
+
+    Swal.fire({
+      title: "Enrollment Failed",
+      text: "Payment received, but enrollment failed. Contact support.",
+      icon: "error",
+      confirmButtonColor: "#EF4444"
+    });
+
+  }
+},
         prefill: {
           name: user?.name || "Test User",
           email: user?.email || "test@example.com",
