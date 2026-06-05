@@ -26,82 +26,213 @@ function AdminDashboard() {
     fetchCourses();
   }, [page]);
 
-  const fetchCourses = async () => {
+  const fetchStats = async () => {
     try {
-      const res = await axios.get(`${API}/api/courses?page=${page}&limit=5`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setCourses(res.data.courses);
-      setTotalPage(res.data.pages);
-    } catch (error) { console.log(error); }
+      const res = await axios.get(
+        `${API}/api/admin/stats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setStats(res.data);
+
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   const fetchPending = async () => {
     try {
-      const res = await axios.get(`${API}/api/admin/pending-instructors`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.get(
+        `${API}/api/admin/pending-instructors`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
       setPending(res.data);
-    } catch (error) { console.log(error); }
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${API}/api/admin/users`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.get(
+        `${API}/api/admin/users`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
       setUsers(res.data);
-    } catch (error) { console.log(error); }
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get(`${API}/api/courses?page=${page}&limit=5`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.get(
+        `${API}/api/courses?page=${page}&limit=5`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
       setCourses(res.data.courses);
-      setPage(res.data.pages);
-    } catch (error) { console.log(error); }
-  };
+      setTotalPage(res.data.pages);
 
-  const approveInstructor = async (id) => {
-    await axios.put(`${API}/api/admin/approve-instructor/${id}`,
-      {},
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-    Swal.fire("Approved!", "", "success");
-    fetchPending();
-  };
-
-  const rejectInstructor = async (id) => {
-    await axios.delete(`${API}/api/admin/reject-instructor/${id}`,
-      {
-        headers:
-          { Authorization: `Bearer ${token}` }
-      });
-
-    Swal.fire("Rejected!", "", "success");
-    fetchPending();
-  };
-
-  const toggleBlockStatus = async (id, isBlocked) => {
-    const endpoint = isBlocked ? `/api/admin/unblock-user/${id}` : `/api/admin/block-user/${id}`;
-    await axios.put(`${API}${endpoint}`, {}, { headers: { Authorization: `Bearer ${token}` } });
-    Swal.fire("Success", `User ${isBlocked ? "Unblocked" : "Blocked"}`, "success");
-    fetchUsers();
-  };
-
-  const deleteCourse = async (id) => {
-    const result = await Swal.fire({ title: "Are you sure?", icon: "warning", showCancelButton: true, confirmButtonColor: "#EF4444" });
-    if (result.isConfirmed) {
-      await axios.delete(`${API}/api/admin/course/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      Swal.fire("Deleted!", "", "success");
-      fetchCourses();
-      fetchStats();
+    } catch (error) {
+      console.log(error);
     }
   };
 
+  useEffect(() => {
+    fetchStats();
+    fetchPending();
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [page]);
+
+  const approveInstructor = async (id) => {
+    try {
+
+      await axios.put(
+        `${API}/api/admin/approve-instructor/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      Swal.fire(
+        "Approved!",
+        "Instructor approved successfully",
+        "success"
+      );
+
+      fetchPending();
+      fetchStats();
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const rejectInstructor = async (id) => {
+    try {
+
+      await axios.delete(
+        `${API}/api/admin/reject-instructor/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      Swal.fire(
+        "Rejected!",
+        "Instructor rejected successfully",
+        "success"
+      );
+
+      fetchPending();
+      fetchStats();
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleBlockStatus = async (
+    id,
+    isBlocked
+  ) => {
+
+    try {
+
+      const endpoint = isBlocked
+        ? `/api/admin/unblock-user/${id}`
+        : `/api/admin/block-user/${id}`;
+
+      await axios.put(
+        `${API}${endpoint}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      Swal.fire(
+        "Success",
+        `User ${isBlocked ? "Unblocked" : "Blocked"}`,
+        "success"
+      );
+
+      fetchUsers();
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteCourse = async (id) => {
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This course will be deleted permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#EF4444"
+    });
+
+    if (result.isConfirmed) {
+
+      try {
+
+        await axios.delete(
+          `${API}/api/admin/course/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        Swal.fire(
+          "Deleted!",
+          "Course deleted successfully",
+          "success"
+        );
+
+        fetchCourses();
+        fetchStats();
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   if (!stats) return <p className="text-center mt-20">Loading...</p>;
 
   return (
@@ -154,6 +285,25 @@ function AdminDashboard() {
             </div>
           </div>
         ))}
+      </div>
+      <div className="flex items-center gap-4 mt-8 justify-center">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="bg-gray-500 text-white px-5 py-2 rounded-xl disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <p className="font-semibold">Page {page} of {totalPage}</p>
+
+        <button
+          disabled={page >= totalPage}
+          onClick={() => setPage(page + 1)}
+          className="bg-blue-600 text-white px-5 py-2 rounded-xl disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
