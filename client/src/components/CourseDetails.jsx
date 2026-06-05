@@ -75,8 +75,8 @@ function CourseDetails() {
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: orderData.amount,      
-        currency: orderData.currency, 
+        amount: Number(orderData.amount),      
+        currency: orderData.currency  || "INR", 
         order_id: orderData.id,       
         name: "LearnHub",
         description: course.title,
