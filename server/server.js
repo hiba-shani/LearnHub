@@ -27,7 +27,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://lms-learn-hub.vercel.app",
+      "https://learnhub-hnws.onrender.com",
     ],
     credentials: true,
   })
