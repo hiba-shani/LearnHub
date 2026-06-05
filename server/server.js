@@ -28,6 +28,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://learnhub-hnws.onrender.com",
+      "https://learn-hub-sandy-gamma.vercel.app"
     ],
     credentials: true,
   })
