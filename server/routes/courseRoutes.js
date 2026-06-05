@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 
@@ -23,6 +22,7 @@ router.post(
     validate,
      createCourse
 );
+
 router.get("/", getCourses);
 
 router.get("/my-courses", authMiddleWare, getMyCourses);
@@ -35,6 +35,17 @@ router.get("/instructor/my-courses",
 router.get("/instructor/stats",
   authMiddleWare,
   getInstructorStats
+);
+
+
+router.put(
+    "/:id",
+    authMiddleWare,
+    roleMiddleWare("admin", "instructor"),
+    upload.single("image"), 
+    courseValidation,
+    validate,
+    updateCourse
 );
 
 // lessons & others
@@ -51,6 +62,8 @@ router.post("/:id/review", authMiddleWare, reviewValidation, validate, addReview
 router.get("/:id/reviews", authMiddleWare, getReviews);
 
 router.get("/:id/rating", authMiddleWare, getAverageRating);
+
+// 3. ADD LESSON (with PDF Upload)
 router.post(
     "/:id/lessons", 
     authMiddleWare, 
