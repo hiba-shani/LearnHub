@@ -1,10 +1,8 @@
-
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function InstructorDashboard() {
-
   const [courses, setCourses] = useState([]);
   const [stats, setStats] = useState(null);
 
@@ -13,14 +11,8 @@ function InstructorDashboard() {
   const API = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
-
     try {
-
       // ✅ COURSES
       const courseRes = await axios.get(
         `${API}/api/courses/instructor/my-courses`,
@@ -44,15 +36,18 @@ function InstructorDashboard() {
       );
 
       setStats(statsRes.data);
-
     } catch (error) {
       console.log(error);
     }
   };
 
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // DELETE COURSE
   const deleteCourse = async (id) => {
-
     const confirmDelete = window.confirm(
       "Are you sure want to delete this course?"
     );
@@ -60,7 +55,6 @@ function InstructorDashboard() {
     if (!confirmDelete) return;
 
     try {
-
       await axios.delete(
         `${API}/api/courses/${id}`,
         {
@@ -72,7 +66,6 @@ function InstructorDashboard() {
 
       alert("Course Deleted 🗑️");
       fetchData();
-
     } catch (error) {
       console.log(error);
       alert("Delete failed ❌");
@@ -80,39 +73,36 @@ function InstructorDashboard() {
   };
 
   if (!stats) {
-    return <p className="p-8">Loading...</p>;
+    return <p className="p-8 text-center mt-20">Loading...</p>;
   }
 
   return (
-    <div className="p-8">
-
+    <div className="p-8 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">
         Instructor Dashboard
       </h1>
 
       {/* STATS */}
       <div className="grid md:grid-cols-4 gap-4 mb-10">
-
-        <div className="bg-blue-500 text-white p-4 rounded">
-          <h2>Total Courses</h2>
-          <p className="text-2xl font-bold">{stats.totalCourses}</p>
+        <div className="bg-blue-500 text-white p-4 rounded-xl shadow-sm">
+          <h2 className="opacity-90">Total Courses</h2>
+          <p className="text-2xl font-bold mt-1">{stats.totalCourses}</p>
         </div>
 
-        <div className="bg-green-500 text-white p-4 rounded">
-          <h2>Total Students</h2>
-          <p className="text-2xl font-bold">{stats.totalStudents}</p>
+        <div className="bg-green-500 text-white p-4 rounded-xl shadow-sm">
+          <h2 className="opacity-90">Total Students</h2>
+          <p className="text-2xl font-bold mt-1">{stats.totalStudents}</p>
         </div>
 
-        <div className="bg-purple-500 text-white p-4 rounded">
-          <h2>Total Revenue</h2>
-          <p className="text-2xl font-bold">₹{stats.totalRevenue}</p>
+        <div className="bg-purple-500 text-white p-4 rounded-xl shadow-sm">
+          <h2 className="opacity-90">Total Revenue</h2>
+          <p className="text-2xl font-bold mt-1">₹{stats.totalRevenue}</p>
         </div>
 
-        <div className="bg-red-500 text-white p-4 rounded">
-          <h2>Total Lessons</h2>
-          <p className="text-2xl font-bold">{stats.totalLessons}</p>
+        <div className="bg-red-500 text-white p-4 rounded-xl shadow-sm">
+          <h2 className="opacity-90">Total Lessons</h2>
+          <p className="text-2xl font-bold mt-1">{stats.totalLessons}</p>
         </div>
-
       </div>
 
       {/* COURSES */}
@@ -121,44 +111,39 @@ function InstructorDashboard() {
       </h2>
 
       {courses.length === 0 ? (
-        <p>No Courses Found</p>
+        <p className="text-gray-500">No Courses Found</p>
       ) : (
-
         <div className="grid md:grid-cols-3 gap-6">
-
           {courses.map((course) => (
-
             <div
               key={course._id}
-              className="border rounded shadow p-4"
+              className="border rounded-2xl shadow-sm p-4 bg-white"
             >
-
               <img
                 src={`${API}/uploads/${course.image}`}
                 alt={course.title}
-                className="w-full h-40 object-cover rounded"
+                className="w-full h-40 object-cover rounded-xl border"
               />
 
-              <h2 className="text-xl font-bold mt-4">
+              <h2 className="text-xl font-bold mt-4 text-gray-800">
                 {course.title}
               </h2>
 
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-2 text-sm line-clamp-2">
                 {course.shortDescription}
               </p>
 
-              <p className="text-blue-600 font-bold mt-2">
+              <p className="text-blue-600 font-bold mt-2 text-lg">
                 ₹{course.price}
               </p>
 
               {/* BUTTONS */}
               <div className="flex gap-2 mt-4 flex-wrap">
-
                 <button
                   onClick={() =>
                     navigate(`/create-lesson/${course._id}`)
                   }
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
                   Add Lesson
                 </button>
@@ -167,7 +152,7 @@ function InstructorDashboard() {
                   onClick={() =>
                     navigate(`/edit-course/${course._id}`)
                   }
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
                   Edit
                 </button>
@@ -176,24 +161,17 @@ function InstructorDashboard() {
                   onClick={() =>
                     deleteCourse(course._id)
                   }
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
                   Delete
                 </button>
-
               </div>
-
             </div>
-
           ))}
-
         </div>
-
       )}
-
     </div>
   );
 }
-
 
 export default InstructorDashboard;
