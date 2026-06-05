@@ -57,7 +57,7 @@ function CourseDetails() {
     console.log("WINDOW RZP:", window.Razorpay);
     
     try {
-      const order = await axios.post(
+      const res = await axios.post(
         `${API}/api/payment/create-order`,
         { amount: course.price },
         {
@@ -67,14 +67,20 @@ function CourseDetails() {
         }
       );
 
+      
+      console.log("Backend Order Response:", res.data);
+
+   
+      const orderData = res.data.order ? res.data.order : res.data;
+
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: order.data.amount,
-        currency: order.data.currency,
-        order_id: order.data.id,
+        amount: orderData.amount,      
+        currency: orderData.currency, 
+        order_id: orderData.id,       
         name: "LearnHub",
         description: course.title,
-        handler: async function () {
+        handler: async function (response) { 
           await axios.post(
             `${API}/api/courses/${id}/enroll`,
             {},
@@ -86,7 +92,14 @@ function CourseDetails() {
           );
           alert("Payment Successful 🎉");
           navigate(`/lessons/${id}`);
-        }
+        },
+        prefill: {
+          name: user?.name || "Test User",
+          email: user?.email || "test@example.com",
+        },
+        theme: {
+          color: "#4F46E5",
+        },
       };
 
       const rzp = new window.Razorpay(options);
