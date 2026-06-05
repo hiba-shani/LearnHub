@@ -1,17 +1,17 @@
+const { body, validationResult } = require("express-validator");
 
-const { body ,validationResult} = require("express-validator");
-
-
-//  AUTH VALIDATION
+// ==========================================
+// 1. AUTH VALIDATION
+// ==========================================
 exports.registerValidation = [
   body("name")
-    .notEmpty().withMessage("Name is required"), //  Required
+    .notEmpty().withMessage("Name is required"),
 
   body("email")
-    .isEmail().withMessage("Valid email required"), //  Format validation
+    .isEmail().withMessage("Valid email required"),
 
   body("password")
-    .isLength({ min: 6 }).withMessage("Min 6 characters") //  Length validation
+    .isLength({ min: 6 }).withMessage("Min 6 characters")
 ];
 
 exports.otpValidation = [
@@ -23,73 +23,84 @@ exports.otpValidation = [
 
 exports.loginValidation = [
   body("email")
-    .isEmail().withMessage("Valid email required"), //  Format
+    .isEmail().withMessage("Valid email required"),
 
   body("password")
-    .notEmpty().withMessage("Password required") //  Required
+    .notEmpty().withMessage("Password required")
 ];
 
 
-//  COURSE VALIDATION
+// ==========================================
+// 2. COURSE VALIDATION (FIXED PRICE ISSUE)
+// ==========================================
 exports.courseValidation = [
   body("title")
-    .notEmpty().withMessage("Title required"), //  Required
+    .notEmpty().withMessage("Title required"),
 
   body("shortDescription")
     .isLength({ min: 10 }).withMessage("Min 10 characters"),
-     body("longDescription")
-    .isLength({ min: 10 }).withMessage("Min 10 characters"),  //  Length
+
+  body("longDescription")
+    .isLength({ min: 10 }).withMessage("Min 10 characters"),
 
   body("price")
-    .isFloat({ min: 0 }).withMessage("Price must be positive"), // Type + Range
+    .trim()
+    .notEmpty().withMessage("Price is required")
+    .toFloat() 
+    .isFloat({ min: 0 }).withMessage("Price must be positive"),
 
   body("category")
-    .notEmpty().withMessage("Category required"), // Required
-
- 
+    .notEmpty().withMessage("Category required"),
 ];
 
 
-//  LESSON VALIDATION
+// ==========================================
+// 3. LESSON VALIDATION
+// ==========================================
 exports.lessonValidation = [
   body("title")
-    .notEmpty().withMessage("Lesson title required"), //  Required
+    .notEmpty().withMessage("Lesson title required"),
 
   body("videoUrl")
-    .isURL().withMessage("Valid video URL required") //  Format
+    .isURL().withMessage("Valid video URL required")
 ];
 
 
-//  REVIEW VALIDATION
+// ==========================================
+// 4. REVIEW VALIDATION
+// ==========================================
 exports.reviewValidation = [
   body("rating")
     .isInt({ min: 1, max: 5 })
-    .withMessage("Rating must be between 1 and 5"), //  Range
+    .withMessage("Rating must be between 1 and 5"),
 
   body("comment")
     .isLength({ min: 3 })
-    .withMessage("Comment too short") //  Length
+    .withMessage("Comment too short")
 ];
 
 
-//  PROGRESS VALIDATION
+// ==========================================
+// 5. PROGRESS VALIDATION
+// ==========================================
 exports.progressValidation = [
   body("lessonId")
     .isMongoId()
-    .withMessage("Invalid lesson ID") //  Type (MongoDB ID)
+    .withMessage("Invalid lesson ID")
 ];
 
 
-
-
+// ==========================================
+// ⚙️ GLOBAL VALIDATION MIDDLEWARE
+// ==========================================
 exports.validate = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     const formattedErrors = {};
 
+    
     errors.array().forEach((err) => {
-      
       if (!formattedErrors[err.path]) {
         formattedErrors[err.path] = err.msg;
       }

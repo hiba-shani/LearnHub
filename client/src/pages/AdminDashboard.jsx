@@ -147,15 +147,15 @@ function AdminDashboard() {
     }
   };
 
-  
+  // DELETE COURSE
   const deleteCourse = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this! All lessons under this course might be affected.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#EF4444", // Red button
-      cancelButtonColor: "#6B7280", // Gray button
+      confirmButtonColor: "#EF4444", 
+      cancelButtonColor: "#6B7280", 
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "Cancel"
     }).then(async (result) => {
@@ -274,6 +274,14 @@ function AdminDashboard() {
             </div>
 
             <div className="flex gap-3">
+              {/* ✏️ ADDED: EDIT COURSE BUTTON */}
+              <button 
+                onClick={() => navigate(`/edit-course/${course._id}`)} 
+                className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition font-semibold"
+              >
+                Edit
+              </button>
+              
               <button onClick={() => navigate(`/add-lesson/${course._id}`)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition">
                 Add Lesson
               </button>
