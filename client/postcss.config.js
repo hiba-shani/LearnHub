@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+ HEAD
 export default {
   plugins: {
     tailwindcss:{},
