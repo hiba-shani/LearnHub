@@ -261,17 +261,57 @@ function AdminDashboard() {
       </div>
 
       {/* QUICK USER MANAGEMENT */}
-      <h2 className="text-2xl font-bold mb-4">User Management</h2>
-      <div className="grid gap-4 mb-10">
-        {users.slice(0, 5).map(user => (
-          <div key={user._id} className="border p-4 rounded-xl flex justify-between items-center bg-white shadow-sm">
-            <div><p className="font-bold">{user.name}</p><p className="text-sm">{user.email}</p></div>
-            <button onClick={() => toggleBlockStatus(user._id, user.isBlocked)} className={`${user.isBlocked ? "bg-green-600" : "bg-red-600"} text-white px-4 py-2 rounded-lg`}>
-              {user.isBlocked ? "Unblock" : "Block"}
-            </button>
-          </div>
-        ))}
+     <h2 className="text-2xl font-bold mb-4">
+  User Management
+</h2>
+
+<div className="grid gap-4 mb-10">
+
+  {users.slice(0, 5).map(user => (
+
+    <div
+      key={user._id}
+      className="border p-4 rounded-xl flex justify-between items-center bg-white shadow-sm"
+    >
+      <div>
+        <p className="font-bold">{user.name}</p>
+        <p className="text-sm">{user.email}</p>
       </div>
+
+      <button
+        onClick={() =>
+          toggleBlockStatus(
+            user._id,
+            user.isBlocked
+          )
+        }
+        className={`${
+          user.isBlocked
+            ? "bg-green-600"
+            : "bg-red-600"
+        } text-white px-4 py-2 rounded-lg`}
+      >
+        {user.isBlocked
+          ? "Unblock"
+          : "Block"}
+      </button>
+
+    </div>
+
+  ))}
+
+</div>
+
+<div className="text-center mb-10">
+
+  <button
+    onClick={() => navigate("/admin/users")}
+    className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700"
+  >
+    View All Users
+  </button>
+
+</div>
 
      {/* COURSES */}
 <h2 className="text-2xl font-bold mb-4">
