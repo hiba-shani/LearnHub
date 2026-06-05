@@ -51,6 +51,15 @@ router.post("/:id/review", authMiddleWare, reviewValidation, validate, addReview
 router.get("/:id/reviews", authMiddleWare, getReviews);
 
 router.get("/:id/rating", authMiddleWare, getAverageRating);
+router.post(
+    "/:id/lessons", 
+    authMiddleWare, 
+    roleMiddleWare("admin", "instructor"), 
+    upload.single("pdf"), 
+    lessonValidation, 
+    validate, 
+    addLesson
+);
 
 router.get("/:id", getCourseById);
 
