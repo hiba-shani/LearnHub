@@ -9,13 +9,14 @@ function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const API = import.meta.env.VITE_API_URL;
 
- useEffect(() => {
+  useEffect(() => {
     fetchStats();
     fetchPending();
     fetchUsers();
@@ -25,15 +26,15 @@ function AdminDashboard() {
     fetchCourses();
   }, [page]);
 
-  const fetchStats = async () => {
+  const fetchCourses = async () => {
     try {
-      const res = await axios.get(`${API}/api/admin/stats`, {
+      const res = await axios.get(`${API}/api/courses?page=${page}&limit=5`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setStats(res.data);
+      setCourses(res.data.courses);
+      setTotalPage(res.data.pages);
     } catch (error) { console.log(error); }
   };
-
   const fetchPending = async () => {
     try {
       const res = await axios.get(`${API}/api/admin/pending-instructors`, {
