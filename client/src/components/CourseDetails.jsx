@@ -37,12 +37,17 @@ function CourseDetails() {
     }
   };
 
+  // 🛠️ FIXED: ADDED AUTHORIZATION HEADER TO FETCH REVIEWS
   const fetchReviews = async () => {
     try {
-      const res = await axios.get(`${API}/api/courses/${id}/reviews`);
+      const res = await axios.get(`${API}/api/courses/${id}/reviews`, {
+        headers: {
+          Authorization: `Bearer ${token}` // 👈 ലോഗിൻ ചെയ്തവർക്ക് മാത്രം കാണാൻ ടോക്കൺ നിർബന്ധമാണ്
+        }
+      });
       setReviews(res.data);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching reviews:", error);
     }
   };
 
@@ -72,7 +77,6 @@ function CourseDetails() {
    
       const orderData = res.data.order ? res.data.order : res.data;
 
-      
       let finalAmount = orderData.amount;
       if (finalAmount < 1000) { 
         finalAmount = finalAmount * 100;
@@ -97,7 +101,6 @@ function CourseDetails() {
               }
             );
 
-            
             Swal.fire({
               title: "Payment Successful! 🎉",
               text: "You have been successfully enrolled in this course.",
@@ -132,7 +135,6 @@ function CourseDetails() {
     } catch (error) {
       console.log(error);
       
-    
       Swal.fire({
         title: "Payment Cancelled/Failed",
         text: error.response?.data?.message || "Could not complete the transaction. Please try again.",
@@ -210,23 +212,30 @@ function CourseDetails() {
           )}
         </div>
 
-        {/* REVIEWS */}
-        <div className="mt-12">
+        {/* REVIEWS SECTION */}
+        <div className="lg:col-span-2 mt-12">
           <h2 className="text-3xl font-bold mb-6">Student Reviews</h2>
 
-          {reviews.length > 0 ? (
-            reviews.map((review, index) => (
-              <div key={index} className="border rounded-2xl p-5 mb-4 bg-gray-50">
-                <div className="flex items-center gap-2 mb-2">
-                  <FaStar className="text-yellow-500" />
-                  <span className="font-semibold">{review.rating}/5</span>
+          {reviews && reviews.length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-4">
+              {reviews.map((review, index) => (
+                <div key={index} className="border border-gray-100 rounded-2xl p-5 bg-white shadow-sm">
+                  <div className="flex items-center gap-1 mb-2">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <FaStar key={i} className="text-yellow-500 text-sm" />
+                    ))}
+                    <span className="font-semibold text-sm ml-1 text-gray-600">{review.rating}/5</span>
+                  </div>
+                  
+                  <h4 className="font-bold text-gray-800">{review.userName || "Anonymous Student"}</h4>
+                  <p className="text-gray-600 mt-1 text-sm leading-relaxed">{review.comment}</p>
                 </div>
-                <h4 className="font-bold">{review.userName}</h4>
-                <p className="text-gray-700">{review.comment}</p>
-              </div>
-            ))
+              ))}
+            </div>
           ) : (
-            <p className="text-gray-500">No reviews yet</p>
+            <p className="text-gray-500 bg-gray-50 p-6 rounded-2xl border border-dashed text-center">
+              No reviews found for this course.
+            </p>
           )}
         </div>
       </div>
