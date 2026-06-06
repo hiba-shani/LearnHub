@@ -43,7 +43,7 @@ router.put(
     authMiddleWare,
     roleMiddleWare("admin", "instructor"),
     upload.single("image"), 
-    courseValidation,
+    // courseValidation,
     validate,
     updateCourse
 );
