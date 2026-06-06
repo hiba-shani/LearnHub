@@ -6,10 +6,15 @@ const Progress = require("../models/Progress");
 const Review = require("../models/Review");
 
 exports.createCourse = async (req, res) => {
+  
 
   try {
-
-    console.log(req.file);
+console.log("Body Data:",req.body);
+  console.log("File data:",req.file);
+    
+  if(!req.file){
+    return res.status(400)({message:"file not uploaded"});
+  }
 
     const {
       title,
