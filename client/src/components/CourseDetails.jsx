@@ -37,12 +37,12 @@ function CourseDetails() {
     }
   };
 
-  // 🛠️ FIXED: ADDED AUTHORIZATION HEADER TO FETCH REVIEWS
+  //  ADDED AUTHORIZATION HEADER TO FETCH REVIEWS
   const fetchReviews = async () => {
     try {
       const res = await axios.get(`${API}/api/courses/${id}/reviews`, {
         headers: {
-          Authorization: `Bearer ${token}` // 👈 ലോഗിൻ ചെയ്തവർക്ക് മാത്രം കാണാൻ ടോക്കൺ നിർബന്ധമാണ്
+          Authorization: `Bearer ${token}` 
         }
       });
       setReviews(res.data);

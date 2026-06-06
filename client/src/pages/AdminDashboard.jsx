@@ -241,7 +241,10 @@ function AdminDashboard() {
 
       {/* STATS */}
       <div className="grid md:grid-cols-3 gap-6 mb-10">
-        <div className="bg-blue-500 text-white p-6 rounded-2xl shadow"><h2 className="text-lg">Total Users</h2><p className="text-3xl font-bold">{stats.totalUsers}</p></div>
+        <div className="bg-blue-500 text-white p-6 rounded-2xl shadow">
+          <h2 className="text-lg">Total Users</h2>
+          <p className="text-3xl font-bold">{stats.totalUsers}</p>
+          </div>
         <div className="bg-green-500 text-white p-6 rounded-2xl shadow"><h2 className="text-lg">Total Courses</h2><p className="text-3xl font-bold">{stats.totalCourses}</p></div>
         <div className="bg-purple-600 text-white p-6 rounded-2xl shadow"><h2 className="text-lg">Total Revenue</h2><p className="text-3xl font-bold">₹{stats?.revenue || 0}</p></div>
       </div>

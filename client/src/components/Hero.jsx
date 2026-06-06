@@ -17,7 +17,7 @@ function Hero() {
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center py-14 lg:py-24 px-4 lg:px-6">
 
-        {/* LEFT SIDE */}
+        
         <div className="relative z-10 text-center lg:text-left">
 
           <span className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-xs md:text-sm font-medium border border-white/20">

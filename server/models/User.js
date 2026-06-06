@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
       default: false
     },
 
-    // ✅ BLOCK USER
+    //  BLOCK USER
     isBlocked: {
       type: Boolean,
       default: false

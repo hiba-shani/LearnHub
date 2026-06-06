@@ -14,7 +14,7 @@ function Register() {
 
   const navigate = useNavigate();
 
-  // ✅ VITE API BASE URL
+  // VITE API BASE URL
   const API = import.meta.env.VITE_API_URL;
 
   const handleRegister = async () => {

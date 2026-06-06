@@ -14,12 +14,11 @@ const paymentRoutes = require("./routes/PaymentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 
-// ❌ REMOVE THIS (nodemailer)
-// const transporter = require("./config/email");
+
 
 const app = express();
 
-// DB
+
 connectDB();
 
 // CORS

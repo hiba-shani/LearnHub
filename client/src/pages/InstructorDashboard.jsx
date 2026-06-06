@@ -26,7 +26,7 @@ function InstructorDashboard() {
 
       setCourses(courseRes.data.courses);
 
-      // ✅ STATS
+      // STATS
       const statsRes = await axios.get(
         `${API}/api/courses/instructor/stats`,
         {

@@ -1,8 +1,6 @@
 const { body, validationResult } = require("express-validator");
 
-// ==========================================
-// 1. AUTH VALIDATION
-// ==========================================
+
 exports.registerValidation = [
   body("name")
     .notEmpty().withMessage("Name is required"),
@@ -30,9 +28,6 @@ exports.loginValidation = [
 ];
 
 
-// ==========================================
-// 2. COURSE VALIDATION (FIXED PRICE ISSUE)
-// ==========================================
 exports.courseValidation = [
   body("title")
     .notEmpty().withMessage("Title required"),
@@ -54,9 +49,7 @@ exports.courseValidation = [
 ];
 
 
-// ==========================================
-// 3. LESSON VALIDATION
-// ==========================================
+
 exports.lessonValidation = [
   body("title")
     .notEmpty().withMessage("Lesson title required"),
@@ -66,9 +59,7 @@ exports.lessonValidation = [
 ];
 
 
-// ==========================================
-// 4. REVIEW VALIDATION
-// ==========================================
+
 exports.reviewValidation = [
   body("rating")
     .isInt({ min: 1, max: 5 })
@@ -80,19 +71,15 @@ exports.reviewValidation = [
 ];
 
 
-// ==========================================
-// 5. PROGRESS VALIDATION
-// ==========================================
+
 exports.progressValidation = [
   body("lessonId")
     .isMongoId()
     .withMessage("Invalid lesson ID")
 ];
 
+// global validation
 
-// ==========================================
-// ⚙️ GLOBAL VALIDATION MIDDLEWARE
-// ==========================================
 exports.validate = (req, res, next) => {
   const errors = validationResult(req);
 

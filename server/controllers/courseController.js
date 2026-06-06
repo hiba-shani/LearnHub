@@ -299,7 +299,7 @@ exports.getCourses = async (req, res) => {
 
     let query = {};
 
-    // 🔍 Search by title
+    //  Search by title
     if (req.query.search) {
 
       query.title = {
@@ -309,41 +309,17 @@ exports.getCourses = async (req, res) => {
 
     }
 
-    // 📂 Filter by category
-    if (req.query.category) {
-
-      query.category = {
-        $regex: req.query.category,
-        $options: "i"
-      };
-
-    }
-
-    // 💰 Filter by price
-    if (req.query.minPrice || req.query.maxPrice) {
-
-      query.price = {};
-
-      if (req.query.minPrice) {
-        query.price.$gte = Number(req.query.minPrice);
-      }
-
-      if (req.query.maxPrice) {
-        query.price.$lte = Number(req.query.maxPrice);
-      }
-
-    }
-
+    
     console.log("QUERY:", query);
 
-    // 📄 Pagination
+    //  Pagination
     const page = parseInt(req.query.page) || 1;
 
     const limit = parseInt(req.query.limit) || 5;
 
     const skip = (page - 1) * limit;
 
-    // 📚 Get Courses
+    //  Get Courses
     const courses = await Course.find(query)
       .skip(skip)
       .limit(limit);
@@ -810,7 +786,7 @@ exports.deleteLesson = async (req, res) => {
 
     const course = await Course.findById(lesson.course);
 
-    // 🔐 Authorization
+    //  Authorization
     if (
       course.instructor.toString() !== req.user.id.toString() &&
       req.user.role !== "admin"
@@ -851,9 +827,7 @@ exports.markLessonComplete = async (req, res) => {
 
     }
 
-    // LESSON ID CHECK
-
-    if (!lessonId) {
+  if (!lessonId) {
 
       return res.status(400).json({
         message: "Lesson ID required"
@@ -1313,19 +1287,19 @@ exports.getInstructorStats = async (req, res) => {
 
     const instructorId = req.user.id;
 
-    // ✅ Instructor Courses
+    //  Instructor Courses
     const courses = await Course.find({
       instructor: instructorId
     });
 
-    // ✅ Total Courses
+    //  Total Courses
     const totalCourses = courses.length;
 
     let totalStudents = 0;
 
     let totalRevenue = 0;
 
-    // ✅ Student Count + Revenue
+    //  Student Count + Revenue
     for (const course of courses) {
 
       const students = await User.countDocuments({
@@ -1339,7 +1313,7 @@ exports.getInstructorStats = async (req, res) => {
 
     }
 
-    // ✅ Total Lessons
+    //  Total Lessons
     const totalLessons = await Lesson.countDocuments({
       course: {
         $in: courses.map((c) => c._id)
