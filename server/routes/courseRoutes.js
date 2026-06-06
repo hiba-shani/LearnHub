@@ -47,6 +47,12 @@ router.put(
     validate,
     updateCourse
 );
+router.delete(
+    "/:id", 
+    authMiddleWare, 
+    roleMiddleWare("admin", "instructor"), 
+    deleteCourse
+);
 
 // lessons & others
 router.post("/:id/enroll", authMiddleWare, enrollCourses);
