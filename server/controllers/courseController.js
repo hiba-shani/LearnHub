@@ -402,7 +402,7 @@ exports.updateCourse = async (req, res) => {
     
     if (req.file) {
       updateData.image = req.file.filename; 
-      updateData.p = req.file.filename; 
+      
     }
 
     const updatedCourse = await Course.findByIdAndUpdate(
