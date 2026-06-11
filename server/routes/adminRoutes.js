@@ -9,7 +9,7 @@ const authMiddleware = require("../middleWares/authMiddleWare");
 const roleMiddleWare=require("../middleWares/roleMiddleWare")
 
 
-// ✅ Dashboard Stats
+//  Dashboard Stats
 router.get(
   "/stats",
   authMiddleware,
@@ -17,7 +17,7 @@ router.get(
 );
 
 
-// ✅ Delete Course
+// Delete Course
 router.delete(
   "/course/:id",
   authMiddleware,
@@ -25,7 +25,7 @@ router.delete(
 );
 
 
-// ✅ Block User
+//  Block User
 router.put(
   "/block-user/:id",
   authMiddleware,
@@ -33,7 +33,7 @@ router.put(
 );
 
 
-// ✅ Unblock User
+//  Unblock User
 router.put(
   "/unblock-user/:id",
   authMiddleware,
@@ -41,7 +41,7 @@ router.put(
 );
 
 
-// ✅ Search Users
+//  Search Users
 router.get(
   "/search-users",
   authMiddleware,
@@ -49,7 +49,7 @@ router.get(
 );
 
 
-// ✅ Search Courses
+//  Search Courses
 router.get(
   "/search-courses",
   authMiddleware,
@@ -77,6 +77,8 @@ authMiddleware,
   adminController.rejectInstructor
 );
 router.get("/users",authMiddleware,roleMiddleWare("admin"),adminController.getAllUsers);
+router.get("/instructors",authMiddleware,roleMiddleWare("admin"),adminController.getAllInstructors);
+router.get("/courses",authMiddleware,roleMiddleWare("admin"),adminController.getAllCoursesAdmin);
 
 
 module.exports = router;

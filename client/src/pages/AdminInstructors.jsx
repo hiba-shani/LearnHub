@@ -2,21 +2,23 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-function AdminUsers() {
+function AdminInstructors() {
 
-  const [users, setUsers] = useState([]);
+  const [pending, setPending] = useState([]);
+  const [instructors, setInstructors] = useState([]);
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const token = localStorage.getItem("token");
   const API = import.meta.env.VITE_API_URL;
 
-  const fetchUsers = async () => {
+  const fetchPendingInstructors = async () => {
 
     try {
 
       const res = await axios.get(
-        `${API}/api/admin/users?page=${page}&limit=10`,
+        `${API}/api/admin/pending-instructors`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -24,7 +26,30 @@ function AdminUsers() {
         }
       );
 
-      setUsers(res.data.users);
+      setPending(res.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+  const fetchInstructors = async () => {
+
+    try {
+
+      const res = await axios.get(
+        `${API}/api/admin/instructors?page=${page}&limit=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setInstructors(res.data.instructors);
       setTotalPages(res.data.pages);
 
     } catch (error) {
@@ -37,9 +62,75 @@ function AdminUsers() {
 
   useEffect(() => {
 
-    fetchUsers();
+    fetchPendingInstructors();
+
+  }, []);
+
+  useEffect(() => {
+
+    fetchInstructors();
 
   }, [page]);
+
+  const approveInstructor = async (id) => {
+
+    try {
+
+      await axios.put(
+        `${API}/api/admin/approve-instructor/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      Swal.fire(
+        "Approved",
+        "Instructor Approved Successfully",
+        "success"
+      );
+
+      fetchPendingInstructors();
+      fetchInstructors();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+  const rejectInstructor = async (id) => {
+
+    try {
+
+      await axios.delete(
+        `${API}/api/admin/reject-instructor/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      Swal.fire(
+        "Rejected",
+        "Instructor Rejected",
+        "success"
+      );
+
+      fetchPendingInstructors();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
 
   const toggleBlockStatus = async (
     id,
@@ -65,12 +156,12 @@ function AdminUsers() {
       Swal.fire(
         "Success",
         isBlocked
-          ? "User Unblocked"
-          : "User Blocked",
+          ? "Instructor Unblocked"
+          : "Instructor Blocked",
         "success"
       );
 
-      fetchUsers();
+      fetchInstructors();
 
     } catch (error) {
 
@@ -85,8 +176,77 @@ function AdminUsers() {
     <div className="p-8">
 
       <h1 className="text-4xl font-bold mb-8">
-        User Management
+        Instructor Management
       </h1>
+
+      {/* Pending Instructors */}
+
+      <h2 className="text-2xl font-bold mb-4 text-orange-600">
+        Pending Instructors
+      </h2>
+
+      <div className="grid gap-4 mb-10">
+
+        {pending.length > 0 ? (
+
+          pending.map((inst) => (
+
+            <div
+              key={inst._id}
+              className="bg-orange-50 border rounded-xl p-4 flex justify-between items-center"
+            >
+
+              <div>
+
+                <h3 className="font-bold">
+                  {inst.name}
+                </h3>
+
+                <p>
+                  {inst.email}
+                </p>
+
+              </div>
+
+              <div className="flex gap-2">
+
+                <button
+                  onClick={() =>
+                    approveInstructor(inst._id)
+                  }
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Approve
+                </button>
+
+                <button
+                  onClick={() =>
+                    rejectInstructor(inst._id)
+                  }
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Reject
+                </button>
+
+              </div>
+
+            </div>
+
+          ))
+
+        ) : (
+
+          <p>No Pending Instructors</p>
+
+        )}
+
+      </div>
+
+      {/* Approved Instructors */}
+
+      <h2 className="text-2xl font-bold mb-4">
+        Approved Instructors
+      </h2>
 
       <div className="overflow-x-auto bg-white rounded-2xl shadow">
 
@@ -105,7 +265,7 @@ function AdminUsers() {
               </th>
 
               <th className="p-4 text-left">
-                Role
+                Courses
               </th>
 
               <th className="p-4 text-left">
@@ -122,28 +282,28 @@ function AdminUsers() {
 
           <tbody>
 
-            {users.map((user) => (
+            {instructors.map((inst) => (
 
               <tr
-                key={user._id}
+                key={inst._id}
                 className="border-b"
               >
 
                 <td className="p-4">
-                  {user.name}
+                  {inst.name}
                 </td>
 
                 <td className="p-4">
-                  {user.email}
+                  {inst.email}
                 </td>
 
-                <td className="p-4 capitalize">
-                  {user.role}
+                <td className="p-4">
+                  {inst.totalCourses}
                 </td>
 
                 <td className="p-4">
 
-                  {user.isBlocked ? (
+                  {inst.isBlocked ? (
 
                     <span className="text-red-600 font-bold">
                       Blocked
@@ -164,18 +324,18 @@ function AdminUsers() {
                   <button
                     onClick={() =>
                       toggleBlockStatus(
-                        user._id,
-                        user.isBlocked
+                        inst._id,
+                        inst.isBlocked
                       )
                     }
                     className={`px-4 py-2 rounded-lg text-white ${
-                      user.isBlocked
+                      inst.isBlocked
                         ? "bg-green-600"
                         : "bg-red-600"
                     }`}
                   >
 
-                    {user.isBlocked
+                    {inst.isBlocked
                       ? "Unblock"
                       : "Block"}
 
@@ -227,4 +387,4 @@ function AdminUsers() {
 
 }
 
-export default AdminUsers;
+export default AdminInstructors;

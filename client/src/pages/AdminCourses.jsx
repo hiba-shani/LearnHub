@@ -2,21 +2,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-function AdminUsers() {
+function AdminCourses() {
 
-  const [users, setUsers] = useState([]);
+  const [courses, setCourses] = useState([]);
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const token = localStorage.getItem("token");
   const API = import.meta.env.VITE_API_URL;
 
-  const fetchUsers = async () => {
+  const fetchCourses = async () => {
 
     try {
 
       const res = await axios.get(
-        `${API}/api/admin/users?page=${page}&limit=10`,
+        `${API}/api/admin/courses?page=${page}&limit=10`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -24,7 +25,7 @@ function AdminUsers() {
         }
       );
 
-      setUsers(res.data.users);
+      setCourses(res.data.courses);
       setTotalPages(res.data.pages);
 
     } catch (error) {
@@ -37,24 +38,26 @@ function AdminUsers() {
 
   useEffect(() => {
 
-    fetchUsers();
+    fetchCourses();
 
   }, [page]);
 
-  const toggleBlockStatus = async (
-    id,
-    isBlocked
-  ) => {
+  const deleteCourse = async (id) => {
+
+    const result = await Swal.fire({
+      title: "Delete Course?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626"
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
 
-      const endpoint = isBlocked
-        ? `/api/admin/unblock-user/${id}`
-        : `/api/admin/block-user/${id}`;
-
-      await axios.put(
-        `${API}${endpoint}`,
-        {},
+      await axios.delete(
+        `${API}/api/admin/course/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -63,14 +66,12 @@ function AdminUsers() {
       );
 
       Swal.fire(
-        "Success",
-        isBlocked
-          ? "User Unblocked"
-          : "User Blocked",
+        "Deleted",
+        "Course deleted successfully",
         "success"
       );
 
-      fetchUsers();
+      fetchCourses();
 
     } catch (error) {
 
@@ -85,7 +86,7 @@ function AdminUsers() {
     <div className="p-8">
 
       <h1 className="text-4xl font-bold mb-8">
-        User Management
+        Course Management
       </h1>
 
       <div className="overflow-x-auto bg-white rounded-2xl shadow">
@@ -97,19 +98,23 @@ function AdminUsers() {
             <tr className="bg-gray-100">
 
               <th className="p-4 text-left">
-                Name
+                Image
               </th>
 
               <th className="p-4 text-left">
-                Email
+                Title
               </th>
 
               <th className="p-4 text-left">
-                Role
+                Instructor
               </th>
 
               <th className="p-4 text-left">
-                Status
+                Category
+              </th>
+
+              <th className="p-4 text-left">
+                Price
               </th>
 
               <th className="p-4 text-left">
@@ -122,63 +127,48 @@ function AdminUsers() {
 
           <tbody>
 
-            {users.map((user) => (
+            {courses.map((course) => (
 
               <tr
-                key={user._id}
+                key={course._id}
                 className="border-b"
               >
 
                 <td className="p-4">
-                  {user.name}
+
+                  <img
+                    src={course.image}
+                    alt={course.title}
+                    className="w-20 h-14 object-cover rounded"
+                  />
+
+                </td>
+
+                <td className="p-4 font-semibold">
+                  {course.title}
                 </td>
 
                 <td className="p-4">
-                  {user.email}
-                </td>
-
-                <td className="p-4 capitalize">
-                  {user.role}
+                  {course.instructor?.name || "N/A"}
                 </td>
 
                 <td className="p-4">
+                  {course.category}
+                </td>
 
-                  {user.isBlocked ? (
-
-                    <span className="text-red-600 font-bold">
-                      Blocked
-                    </span>
-
-                  ) : (
-
-                    <span className="text-green-600 font-bold">
-                      Active
-                    </span>
-
-                  )}
-
+                <td className="p-4">
+                  ₹{course.price}
                 </td>
 
                 <td className="p-4">
 
                   <button
                     onClick={() =>
-                      toggleBlockStatus(
-                        user._id,
-                        user.isBlocked
-                      )
+                      deleteCourse(course._id)
                     }
-                    className={`px-4 py-2 rounded-lg text-white ${
-                      user.isBlocked
-                        ? "bg-green-600"
-                        : "bg-red-600"
-                    }`}
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg"
                   >
-
-                    {user.isBlocked
-                      ? "Unblock"
-                      : "Block"}
-
+                    Delete
                   </button>
 
                 </td>
@@ -227,4 +217,4 @@ function AdminUsers() {
 
 }
 
-export default AdminUsers;
+export default AdminCourses;

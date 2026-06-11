@@ -400,13 +400,27 @@ exports.searchCourses = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-
   try {
 
-    const users = await User.find()
-      .select("-password");
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
 
-    res.json(users);
+    const skip = (page - 1) * limit;
+
+    const totalUsers = await User.countDocuments();
+
+    const users = await User.find()
+      .select("-password")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.json({
+      users,
+      totalUsers,
+      page,
+      pages: Math.ceil(totalUsers / limit)
+    });
 
   } catch (error) {
 
@@ -417,6 +431,162 @@ exports.getAllUsers = async (req, res) => {
     });
 
   }
-
-
 };
+
+
+exports.getAllInstructors = async (req, res) => {
+  try {
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const totalInstructors = await User.countDocuments({
+      role: "instructor",
+      status: "approved"
+    });
+
+    const instructors = await User.find({
+      role: "instructor",
+      status: "approved"
+    })
+      .select("-password")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const instructorData = await Promise.all(
+
+      instructors.map(async (inst) => {
+
+        const totalCourses = await Course.countDocuments({
+          instructor: inst._id
+        });
+
+        return {
+          _id: inst._id,
+          name: inst.name,
+          email: inst.email,
+          status: inst.status,
+          isBlocked: inst.isBlocked,
+          totalCourses
+        };
+
+      })
+
+    );
+
+    res.json({
+      instructors: instructorData,
+      totalInstructors,
+      page,
+      pages: Math.ceil(totalInstructors / limit)
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+
+
+
+exports.getAllCoursesAdmin = async (req, res) => {
+  try {
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const totalCourses =
+      await Course.countDocuments();
+
+    const courses =
+      await Course.find()
+      .populate(
+        "instructor",
+        "name email"
+      )
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.json({
+      courses,
+      totalCourses,
+      page,
+      pages: Math.ceil(
+        totalCourses / limit
+      )
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+
+exports.getRevenueData = async (req, res) => {
+  try {
+
+    const courses = await Course.find()
+      .populate("instructor", "name");
+
+    const revenueData = [];
+
+    let totalRevenue = 0;
+    let totalEnrollments = 0;
+
+    for (const course of courses) {
+
+      const students =
+        await User.countDocuments({
+          enrolledCourses: course._id,
+          role: "student"
+        });
+
+      const revenue =
+        students * Number(course.price);
+
+      totalRevenue += revenue;
+      totalEnrollments += students;
+
+      revenueData.push({
+        courseId: course._id,
+        title: course.title,
+        instructor:
+          course.instructor?.name ||
+          "Unknown",
+        price: course.price,
+        students,
+        revenue
+      });
+
+    }
+
+    res.json({
+      totalRevenue,
+      totalEnrollments,
+      totalCourses: courses.length,
+      revenueData
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+
