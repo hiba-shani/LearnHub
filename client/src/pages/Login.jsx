@@ -30,7 +30,7 @@ function Login() {
 
 
       if (res.data.user.role === "admin") {
-        navigate("/admin-dashboard");
+        navigate("/admin/dashboard");
       }
       else if (res.data.user.role === "instructor") {
         navigate("/instructor-dashboard");
