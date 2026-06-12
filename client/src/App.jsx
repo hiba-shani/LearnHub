@@ -24,7 +24,7 @@ import CreateCourse from "./pages/CreateCourse";
 import EditCourse from "./pages/EditCourse";
 import Lessons from "./pages/Lessons";
 import CreateLesson from "./pages/AddLesson";
-import EditLesson from "./pages/EditLesson";
+
 import Contact from "./pages/Contact";
 import WhyChooseUs from "./pages/WhyChooseUs";
 import Testimonials from "./pages/Testmonials";
@@ -75,7 +75,7 @@ function Layout() {
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="edit-course/:id" element={<EditCourse />} />
           <Route path="add-lesson/:id" element={<CreateLesson />} />
-          <Route path="edit-lesson/:lessonId" element={<EditLesson />} />
+        
         
         </Route>
 
