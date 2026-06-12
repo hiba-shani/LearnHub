@@ -262,7 +262,7 @@ exports.createCourse = async (req, res) => {
         }
       ];
     }
-
+console.log("IMAGE URL BEFORE SAVE:", req.file.path);
     const course = new Course({
 
       title,
@@ -275,13 +275,14 @@ exports.createCourse = async (req, res) => {
 
       image: req.file
         ? req.file.path
-        : null,
+        : "",
 
       instructor: req.user.id
 
     });
 
     await course.save();
+    console.log("SAVED COURSES:",course);
 
     res.json({
       message: "Course created",
