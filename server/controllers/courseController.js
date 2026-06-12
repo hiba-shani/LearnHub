@@ -14,7 +14,7 @@ exports.createCourse = async (req, res) => {
 
     
   if(!req.file){
-    return res.status(400)({message:"file not uploaded"});
+    return res.status(400).json({message:"file not uploaded"});
   }
 
     const {
