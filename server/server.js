@@ -38,7 +38,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+const uploadsPath = path.join(__dirname, "uploads");
+
+app.use(
+  "/uploads",
+  express.static(uploadsPath)
+);
+
+console.log(__dirname);
+console.log(path.join(__dirname,"uploads"));
 
 // Routes
 app.get("/", (req, res) => {
