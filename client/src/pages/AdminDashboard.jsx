@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 function AdminDashboard() {
 
@@ -9,8 +8,7 @@ function AdminDashboard() {
   const token = localStorage.getItem("token");
   const API = import.meta.env.VITE_API_URL;
 
-  const navigate = useNavigate();
-
+  
   const fetchStats = async () => {
 
     try {
@@ -104,30 +102,9 @@ function AdminDashboard() {
 
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mt-10">
-
-        <button
-          onClick={() => navigate("/admin/users")}
-          className="bg-blue-600 text-white p-4 rounded-xl"
-        >
-          User Management
-        </button>
-
-        <button
-          onClick={() => navigate("/admin/instructors")}
-          className="bg-green-600 text-white p-4 rounded-xl"
-        >
-          Instructor Management
-        </button>
-
-        <button
-          onClick={() => navigate("/admin/courses")}
-          className="bg-purple-600 text-white p-4 rounded-xl"
-        >
-          Course Management
-        </button>
-
-      </div>
+      
+       
+    
 
     </div>
 
