@@ -80,7 +80,7 @@ function MyCourses() {
                   <div className="p-4 flex gap-2 border-t mt-auto">
                     <button onClick={() => navigate(`/instructor/add-lesson/${course._id}`)} className="flex-1 bg-green-600 text-white py-2 rounded-xl text-xs hover:bg-green-700">Add Lesson</button>
 
-                    <button onClick={() => navigate(`/instructor/lessons/${course._id}`)} className="w-full bg-purple-600 text-white py-2 rounded-xl text-sm hover:bg-purple-700"> Edit Lessons</button>
+
                     <button onClick={() => navigate(`/instructor/edit-course/${course._id}`)} className="flex-1 bg-yellow-500 text-white py-2 rounded-xl text-xs hover:bg-yellow-600">Edit course</button>
                     <button onClick={() => deleteCourse(course._id)} className="flex-1 bg-red-600 text-white py-2 rounded-xl text-xs hover:bg-red-700">Delete</button>
                   </div>
