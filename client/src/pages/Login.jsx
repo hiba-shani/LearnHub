@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -28,10 +28,14 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      
+
       if (res.data.user.role === "admin") {
-        navigate("/admin");
-      } else {
+        navigate("/admin-dashboard");
+      }
+      else if (res.data.user.role === "instructor") {
+        navigate("/instructor-dashboard");
+      }
+      else {
         navigate("/");
       }
 
@@ -44,34 +48,34 @@ function Login() {
         setErrors(validationErrors);
 
       } else {
-        
+
         const errorMessage = err.response?.data?.message || "";
 
-       
+
         if (
-          errorMessage.toLowerCase().includes("not found") || 
+          errorMessage.toLowerCase().includes("not found") ||
           errorMessage.toLowerCase().includes("exist") ||
           err.response?.status === 404
         ) {
-          
-          
+
+
           Swal.fire({
             title: "Account Not Found!",
             text: "User does not exist. Please register first to continue.",
             icon: "error",
             showCancelButton: true,
-            confirmButtonColor: "#2563EB", 
+            confirmButtonColor: "#2563EB",
             cancelButtonColor: "#EF4444",
             confirmButtonText: "Go to Register",
             cancelButtonText: "Try Again"
           }).then((result) => {
             if (result.isConfirmed) {
-              navigate("/register"); 
+              navigate("/register");
             }
           });
 
         } else {
-          
+
           Swal.fire({
             title: "Login Failed",
             text: errorMessage || "Something went wrong. Please try again.",

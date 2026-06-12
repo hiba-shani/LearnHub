@@ -7,10 +7,11 @@ const Review = require("../models/Review");
 
 exports.createCourse = async (req, res) => {
   
+  console.log("Body Data:",req.body);
+  console.log("File data:",req.file);
 
   try {
-console.log("Body Data:",req.body);
-  console.log("File data:",req.file);
+
     
   if(!req.file){
     return res.status(400)({message:"file not uploaded"});

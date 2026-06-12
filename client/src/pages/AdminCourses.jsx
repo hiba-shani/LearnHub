@@ -9,7 +9,7 @@ function AdminCourses() {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
   const API = import.meta.env.VITE_API_URL;
@@ -85,13 +85,41 @@ function AdminCourses() {
 
   return (
 
-    <div className="p-8">
+    <div className="p-8 bg-gray-50 min-h-screen">
 
-      <h1 className="text-4xl font-bold mb-8">
-        Course Management
-      </h1>
+      <div className="flex justify-between items-center mb-8">
 
-      <div className="overflow-x-auto bg-white rounded-2xl shadow">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-800">
+            Course Management
+          </h1>
+
+          <p className="text-gray-500 mt-2">
+            Manage all courses, lessons and course content
+          </p>
+        </div>
+
+        <button
+          onClick={() => navigate("/create-course")}
+          className="
+      bg-gradient-to-r
+      from-blue-600
+      to-indigo-600
+      text-white
+      px-6
+      py-3
+      rounded-xl
+      font-semibold
+      shadow-lg
+      hover:scale-105
+      transition
+    "
+        >
+          + Create Course
+        </button>
+
+      </div>
+      <div className="overflow-x-auto bg-white rounded-3xl shadow-xl border border-gray-100">
 
         <table className="w-full">
 
@@ -139,9 +167,15 @@ function AdminCourses() {
                 <td className="p-4">
 
                   <img
-                    src={course.image}
+                    src={`${API}/uploads/${course.image}`}
                     alt={course.title}
-                    className="w-20 h-14 object-cover rounded"
+                    className="
+    w-24
+    h-16
+    object-cover
+    rounded-xl
+    border
+  "
                   />
 
                 </td>
