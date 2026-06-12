@@ -34,6 +34,7 @@ function AdminRevenue() {
   useEffect(() => {
 
     fetchRevenue();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
 
   }, []);
 

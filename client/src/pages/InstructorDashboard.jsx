@@ -14,7 +14,7 @@ function InstructorDashboard() {
 
   const fetchData = async () => {
     try {
-      // ✅ COURSES
+      //  COURSES
       const courseRes = await axios.get(
         `${API}/api/courses/instructor/my-courses`,
         {
@@ -26,7 +26,7 @@ function InstructorDashboard() {
 
       setCourses(courseRes.data.courses);
 
-      // STATS
+      
       const statsRes = await axios.get(
         `${API}/api/courses/instructor/stats`,
         {
@@ -54,8 +54,8 @@ function InstructorDashboard() {
       text: "Do you really want to delete this course? This action cannot be undone!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#EF4444", // Red button
-      cancelButtonColor: "#6B7280", // Gray button
+      confirmButtonColor: "#EF4444", 
+      cancelButtonColor: "#6B7280", 
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "Cancel"
     }).then(async (result) => {
@@ -69,7 +69,6 @@ function InstructorDashboard() {
               }
             }
           );
-
           
           Swal.fire({
             title: "Deleted!",
@@ -81,7 +80,6 @@ function InstructorDashboard() {
           fetchData(); 
         } catch (error) {
           console.log(error);
-          
           Swal.fire({
             title: "Delete Failed",
             text: error.response?.data?.message || "Could not delete the course.",
@@ -103,30 +101,25 @@ function InstructorDashboard() {
         Instructor Dashboard
       </h1>
 
-      {/* STATS */}
-      <div className="grid md:grid-cols-4 gap-4 mb-10">
-        <div className="bg-blue-500 text-white p-4 rounded-xl shadow-sm">
+      
+      <div className="grid md:grid-cols-3 gap-6 mb-10">
+        <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-sm">
           <h2 className="opacity-90">Total Courses</h2>
-          <p className="text-2xl font-bold mt-1">{stats.totalCourses}</p>
+          <p className="text-3xl font-bold mt-2">{stats.totalCourses}</p>
         </div>
 
-        <div className="bg-green-500 text-white p-4 rounded-xl shadow-sm">
+        <div className="bg-green-600 text-white p-6 rounded-2xl shadow-sm">
           <h2 className="opacity-90">Total Students</h2>
-          <p className="text-2xl font-bold mt-1">{stats.totalStudents}</p>
+          <p className="text-3xl font-bold mt-2">{stats.totalStudents}</p>
         </div>
 
-        <div className="bg-purple-500 text-white p-4 rounded-xl shadow-sm">
-          <h2 className="opacity-90">Total Revenue</h2>
-          <p className="text-2xl font-bold mt-1">₹{stats.totalRevenue}</p>
-        </div>
-
-        <div className="bg-red-500 text-white p-4 rounded-xl shadow-sm">
+        <div className="bg-purple-600 text-white p-6 rounded-2xl shadow-sm">
           <h2 className="opacity-90">Total Lessons</h2>
-          <p className="text-2xl font-bold mt-1">{stats.totalLessons}</p>
+          <p className="text-3xl font-bold mt-2">{stats.totalLessons}</p>
         </div>
       </div>
 
-      {/* COURSES */}
+      {/* MY COURSES */}
       <h2 className="text-2xl font-bold mb-6">
         My Courses
       </h2>
@@ -158,30 +151,24 @@ function InstructorDashboard() {
                 ₹{course.price}
               </p>
 
-              {/* BUTTONS */}
+              
               <div className="flex gap-2 mt-4 flex-wrap">
                 <button
-                  onClick={() =>
-                    navigate(`/add-lesson/${course._id}`)
-                  }
+                  onClick={() => navigate(`/instructor/add-lesson/${course._id}`)}
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
                   Add Lesson
                 </button>
 
                 <button
-                  onClick={() =>
-                    navigate(`/edit-course/${course._id}`)
-                  }
+                  onClick={() => navigate(`/instructor/edit-course/${course._id}`)}
                   className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
                   Edit
                 </button>
 
                 <button
-                  onClick={() =>
-                    deleteCourse(course._id)
-                  }
+                  onClick={() => deleteCourse(course._id)}
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
                   Delete
