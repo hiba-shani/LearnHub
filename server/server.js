@@ -38,12 +38,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static uploads
-const uploadsPath = path.join(__dirname, "uploads");
+
 
 app.use(
   "/uploads",
-  express.static(uploadsPath)
+  express.static(path.join(__dirname, "uploads"))
 );
+
+app.get("/test-image", (req,res)=>{
+  res.sendFile(
+    path.join(
+      __dirname,
+      "uploads/images/1781262550244.jpeg"
+    )
+  );
+});
+
 
 console.log(__dirname);
 console.log(path.join(__dirname,"uploads"));
