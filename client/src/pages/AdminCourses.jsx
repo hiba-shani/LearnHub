@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function AdminCourses() {
 
@@ -8,6 +9,7 @@ function AdminCourses() {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate=useNavigate();
 
   const token = localStorage.getItem("token");
   const API = import.meta.env.VITE_API_URL;
@@ -162,17 +164,75 @@ function AdminCourses() {
 
                 <td className="p-4">
 
-                  <button
-                    onClick={() =>
-                      deleteCourse(course._id)
-                    }
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex gap-2 flex-wrap">
+
+                    <button
+                      onClick={() =>
+                        navigate(`/edit-course/${course._id}`)
+                      }
+                      className="
+      bg-amber-500
+      text-white
+      px-4
+      py-2
+      rounded-lg
+      hover:bg-amber-600
+      "
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        navigate(`/add-lesson/${course._id}`)
+                      }
+                      className="
+      bg-green-600
+      text-white
+      px-4
+      py-2
+      rounded-lg
+      hover:bg-green-700
+      "
+                    >
+                      Add Lesson
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        navigate(`/lessons/${course._id}`)
+                      }
+                      className="
+      bg-blue-600
+      text-white
+      px-4
+      py-2
+      rounded-lg
+      hover:bg-blue-700
+      "
+                    >
+                      View Lessons
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        deleteCourse(course._id)
+                      }
+                      className="
+      bg-red-600
+      text-white
+      px-4
+      py-2
+      rounded-lg
+      hover:bg-red-700
+      "
+                    >
+                      Delete
+                    </button>
+
+                  </div>
 
                 </td>
-
               </tr>
 
             ))}
