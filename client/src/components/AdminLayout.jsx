@@ -1,4 +1,5 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import AdminSidebar from "./AdminSidebar";
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function AdminLayout() {
 
           <nav className="flex flex-col gap-3">
             <NavLink
-              to="/admin-dashboard"
+              to="/admin/dashboard"
               className={({ isActive }) =>
                 `p-3 rounded-lg ${isActive ? "bg-indigo-500" : "hover:bg-indigo-600"}`
               }
