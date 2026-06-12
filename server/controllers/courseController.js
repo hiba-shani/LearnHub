@@ -275,7 +275,7 @@ exports.createCourse = async (req, res) => {
 
       image: req.file
         ? req.file.filename
-        : "",
+        : null,
 
       instructor: req.user.id
 
