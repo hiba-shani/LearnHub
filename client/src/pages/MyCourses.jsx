@@ -9,7 +9,7 @@ function MyCourses() {
 
   const token = localStorage.getItem("token");
 
-  // ✅ VITE API BASE URL
+  // VITE API BASE URL
   const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {

@@ -134,7 +134,7 @@ function InstructorDashboard() {
               className="border rounded-2xl shadow-sm p-4 bg-white"
             >
               <img
-                src={`${API}/uploads/${course.image}`}
+                src={course.image}
                 alt={course.title}
                 className="w-full h-40 object-cover rounded-xl border"
               />
