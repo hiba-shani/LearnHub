@@ -4,93 +4,61 @@ import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; 
 
 function EditLesson() {
-
   const { lessonId } = useParams();
   const navigate = useNavigate();
 
   const API = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
 
-  const [title, setTitle] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [notes, setNotes] = useState("");
+  const [formData, setFormData] = useState({ title: "", videoUrl: "", notes: "" });
   const [pdf, setPdf] = useState(null);
   const [loading, setLoading] = useState(false); 
+  const [errors, setErrors] = useState({});
 
-  // FETCH LESSON
   useEffect(() => {
     const fetchLesson = async () => {
       try {
-        const res = await axios.get(
-          `${API}/api/courses/lesson/${lessonId}`
-        );
-
+        const res = await axios.get(`${API}/api/courses/lesson/${lessonId}`);
         const lesson = res.data.lesson;
-
-        setTitle(lesson.title || "");
-        setVideoUrl(lesson.videoUrl || "");
-        setNotes(lesson.notes || "");
-
+        setFormData({
+          title: lesson.title || "",
+          videoUrl: lesson.videoUrl || "",
+          notes: lesson.notes || ""
+        });
       } catch (error) {
         console.log(error);
-        Swal.fire({
-          title: "Error Fetching Data",
-          text: "Could not load lesson details.",
-          icon: "error",
-          confirmButtonColor: "#EF4444"
-        });
+        Swal.fire("Error", "Could not load lesson details.", "error");
       }
     };
-
     fetchLesson();
   }, [lessonId, API]);
 
-  // UPDATE LESSON
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if(errors[e.target.name]) setErrors({ ...errors, [e.target.name]: null });
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrors({});
+
+    const data = new FormData();
+    Object.keys(formData).forEach(key => data.append(key, formData[key]));
+    if (pdf) data.append("pdf", pdf);
 
     try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("videoUrl", videoUrl);
-      formData.append("notes", notes);
-
-      if (pdf) {
-        formData.append("pdf", pdf);
-      }
-
-      await axios.put(
-        `${API}/api/courses/lesson/${lessonId}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data"
-          }
-        }
-      );
-
-      
-      Swal.fire({
-        title: "Lesson Updated! ✅",
-        text: "The lesson details have been updated successfully.",
-        icon: "success",
-        confirmButtonColor: "#10B981" // Green color
-      }).then(() => {
-        navigate(-1);
+      await axios.put(`${API}/api/courses/lesson/${lessonId}`, data, {
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
 
+      Swal.fire("Success", "Lesson updated successfully!", "success").then(() => navigate(-1));
     } catch (error) {
-      console.log(error);
-      
-     
-      Swal.fire({
-        title: "Update Failed",
-        text: error.response?.data?.message || "Something went wrong. Please try again.",
-        icon: "error",
-        confirmButtonColor: "#EF4444"
-      });
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        Swal.fire("Update Failed", error.response?.data?.message || "Something went wrong.", "error");
+      }
     } finally {
       setLoading(false);
     }
@@ -99,48 +67,26 @@ function EditLesson() {
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white shadow rounded-xl mt-10">
       <h1 className="text-3xl font-bold mb-6">Edit Lesson</h1>
-
       <form onSubmit={handleUpdate} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Lesson Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="border p-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        />
+        
+        <div>
+          <input name="title" placeholder="Lesson Title" value={formData.title} onChange={handleChange} className={`border p-3 w-full rounded ${errors.title ? "border-red-500" : ""}`} />
+          {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+        </div>
 
-        <input
-          type="text"
-          placeholder="Video URL"
-          value={videoUrl}
-          onChange={(e) => setVideoUrl(e.target.value)}
-          className="border p-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <div>
+          <input name="videoUrl" placeholder="Video URL" value={formData.videoUrl} onChange={handleChange} className={`border p-3 w-full rounded ${errors.videoUrl ? "border-red-500" : ""}`} />
+          {errors.videoUrl && <p className="text-red-500 text-xs mt-1">{errors.videoUrl}</p>}
+        </div>
 
-        <textarea
-          rows="6"
-          placeholder="Lesson Notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          className="border p-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <textarea name="notes" rows="6" placeholder="Lesson Notes" value={formData.notes} onChange={handleChange} className="border p-3 w-full rounded" />
 
         <div className="flex flex-col space-y-1">
           <label className="text-sm font-semibold text-gray-600">Update PDF Notes (Optional):</label>
-          <input
-            type="file"
-            accept=".pdf"
-            onChange={(e) => setPdf(e.target.files[0])}
-            className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 border p-2 w-full rounded"
-          />
+          <input type="file" accept=".pdf" onChange={(e) => setPdf(e.target.files[0])} className="text-sm border p-2 w-full rounded" />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-bold px-6 py-3 rounded transition mt-4"
-        >
+        <button type="submit" disabled={loading} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition mt-4">
           {loading ? "Updating..." : "Update Lesson"}
         </button>
       </form>

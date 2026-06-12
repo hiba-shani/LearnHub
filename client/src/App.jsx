@@ -33,6 +33,7 @@ import Certificate from "./pages/Certificate";
 import VerifyOtp from "./pages/VerifyOtp";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import CourseLessons from "./pages/CourseLessons";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -75,6 +76,7 @@ function Layout() {
           <Route path="edit-course/:id" element={<EditCourse />} />
           <Route path="add-lesson/:id" element={<CreateLesson />} />
           <Route path="edit-lesson/:lessonId" element={<EditLesson />} />
+          <Route path="/instructor/lessons/:courseId" element={<CourseLessons/>}/>
         </Route>
 
         {/* Other Protected Routes (User) */}

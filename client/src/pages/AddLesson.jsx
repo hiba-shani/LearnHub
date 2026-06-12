@@ -10,23 +10,14 @@ function CreateLesson() {
   const [videoUrl, setVideoUrl] = useState("");
   const [notes, setNotes] = useState("");
   const [pdf, setPdf] = useState(null);
+  const [errors, setErrors] = useState({}); 
 
   const token = localStorage.getItem("token");
   const API = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    
-    if (!title.trim()) {
-      Swal.fire({
-        title: "Validation Error",
-        text: "Please enter a lesson title.",
-        icon: "warning",
-        confirmButtonColor: "#2563EB"
-      });
-      return;
-    }
+    setErrors({}); 
 
     const formData = new FormData();
     formData.append("title", title);
@@ -46,33 +37,31 @@ function CreateLesson() {
         }
       );
 
-      
       Swal.fire({
         title: "Lesson Added! 🎉",
         text: "The new lesson has been added successfully.",
         icon: "success",
-        confirmButtonColor: "#2563EB", // Blue-600
+        confirmButtonColor: "#2563EB",
       });
 
-     
       setTitle("");
       setVideoUrl("");
       setNotes("");
       setPdf(null);
-      
-      
       document.getElementById("pdf-file-input").value = "";
 
     } catch (error) {
-      console.log(error);
-      
-      
-      Swal.fire({
-        title: "Error Adding Lesson",
-        text: error.response?.data?.message || "Something went wrong. Please try again.",
-        icon: "error",
-        confirmButtonColor: "#EF4444",
-      });
+      // backend validation
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: error.response?.data?.message || "Something went wrong.",
+          icon: "error",
+          confirmButtonColor: "#EF4444",
+        });
+      }
     }
   };
 
@@ -82,21 +71,27 @@ function CreateLesson() {
         <h1 className="text-2xl font-bold mb-4">Add Lesson</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Lesson Title"
-            className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          <div>
+            <input
+              type="text"
+              placeholder="Lesson Title"
+              className={`border p-2 w-full rounded focus:outline-none ${errors.title ? "border-red-500" : "border-gray-300"}`}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+          </div>
 
-          <input
-            type="text"
-            placeholder="Video URL"
-            className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-          />
+          <div>
+            <input
+              type="text"
+              placeholder="Video URL"
+              className={`border p-2 w-full rounded focus:outline-none ${errors.videoUrl ? "border-red-500" : "border-gray-300"}`}
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+            />
+            {errors.videoUrl && <p className="text-red-500 text-sm mt-1">{errors.videoUrl}</p>}
+          </div>
 
           <textarea
             placeholder="Lesson Notes"
@@ -106,7 +101,6 @@ function CreateLesson() {
             onChange={(e) => setNotes(e.target.value)}
           />
 
-         
           <div className="flex flex-col space-y-1">
             <label className="text-sm font-semibold text-gray-600">Upload PDF Notes (Optional):</label>
             <input
