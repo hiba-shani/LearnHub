@@ -119,65 +119,7 @@ function InstructorDashboard() {
         </div>
       </div>
 
-      {/* MY COURSES */}
-      <h2 className="text-2xl font-bold mb-6">
-        My Courses
-      </h2>
-
-      {courses.length === 0 ? (
-        <p className="text-gray-500">No Courses Found</p>
-      ) : (
-        <div className="grid md:grid-cols-3 gap-6">
-          {courses.map((course) => (
-            <div
-              key={course._id}
-              className="border rounded-2xl shadow-sm p-4 bg-white"
-            >
-              <img
-                src={course.image}
-                alt={course.title}
-                className="w-full h-40 object-cover rounded-xl border"
-              />
-
-              <h2 className="text-xl font-bold mt-4 text-gray-800">
-                {course.title}
-              </h2>
-
-              <p className="text-gray-600 mt-2 text-sm line-clamp-2">
-                {course.shortDescription}
-              </p>
-
-              <p className="text-blue-600 font-bold mt-2 text-lg">
-                ₹{course.price}
-              </p>
-
-              
-              <div className="flex gap-2 mt-4 flex-wrap">
-                <button
-                  onClick={() => navigate(`/instructor/add-lesson/${course._id}`)}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
-                >
-                  Add Lesson
-                </button>
-
-                <button
-                  onClick={() => navigate(`/instructor/edit-course/${course._id}`)}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => deleteCourse(course._id)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      
     </div>
   );
 }

@@ -33,7 +33,7 @@ function Login() {
         navigate("/admin/dashboard");
       }
       else if (res.data.user.role === "instructor") {
-        navigate("/instructor-dashboard");
+        navigate("/instructor/dashboard");
       }
       else {
         navigate("/");
