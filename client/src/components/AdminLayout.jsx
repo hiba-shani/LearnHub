@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import AdminSidebar from "../components/AdminSidebar";
+
 
 function AdminLayout() {
   const navigate = useNavigate();
