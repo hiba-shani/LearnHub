@@ -39,7 +39,7 @@ function CourseCard({ course }) {
       <img
         src={
           course.image
-            ? `${API}/uploads/${course.image}`
+            ? course.image
             : "https://via.placeholder.com/400x250"
         }
         alt={course.title}
