@@ -79,6 +79,7 @@ authMiddleware,
 router.get("/users",authMiddleware,roleMiddleWare("admin"),adminController.getAllUsers);
 router.get("/instructors",authMiddleware,roleMiddleWare("admin"),adminController.getAllInstructors);
 router.get("/courses",authMiddleware,roleMiddleWare("admin"),adminController.getAllCoursesAdmin);
+router.get("/revenue",authMiddleware,roleMiddleWare("admin"),adminController.getRevenueData);
 
 
 module.exports = router;
