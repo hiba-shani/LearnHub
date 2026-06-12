@@ -1,44 +1,22 @@
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
 
-const imagePath = path.join(__dirname,"../uploads/images");
-const pdfPath = path.join(__dirname,"../uploads/pdfs");
+const storage = new CloudinaryStorage({
 
+  cloudinary: cloudinary,
 
-// create folders automatically
-if(!fs.existsSync(imagePath)){
-  fs.mkdirSync(imagePath,{recursive:true});
-}
+  params: {
 
-if(!fs.existsSync(pdfPath)){
-  fs.mkdirSync(pdfPath,{recursive:true});
-}
+    folder: "learnhub/courses",
 
-
-
-const storage = multer.diskStorage({
-
-  destination:function(req,file,cb){
-
-    if(file.fieldname === "image"){
-      cb(null,imagePath);
-    }
-
-    else if(file.fieldname === "pdf"){
-      cb(null,pdfPath);
-    }
-
-  },
-
-
-  filename:function(req,file,cb){
-
-    cb(
-      null,
-      Date.now()+path.extname(file.originalname)
-    );
+    allowed_formats: [
+      "jpg",
+      "jpeg",
+      "png",
+      "webp"
+    ]
 
   }
 

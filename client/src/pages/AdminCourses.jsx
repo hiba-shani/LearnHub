@@ -167,7 +167,7 @@ function AdminCourses() {
                 <td className="p-4">
 
                   <img
-                    src={`${API}/uploads/images/${course.image}`}
+                    src={course.image}
                     alt={course.title}
                     className="
     w-24
