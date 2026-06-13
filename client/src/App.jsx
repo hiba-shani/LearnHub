@@ -9,16 +9,15 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyCourses from "./pages/MyCourses";
 
-
 import AdminLayout from "./components/AdminLayout";
 import InstructorLayout from "./components/InstructorLayout";
-
 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminInstructors from "./pages/AdminInstructors";
 import AdminCourses from "./pages/AdminCourses";
 import AdminRevenue from "./pages/AdminRevenue";
+
 import InstructorDashboard from "./pages/InstructorDashboard";
 import CreateCourse from "./pages/CreateCourse";
 import EditCourse from "./pages/EditCourse";
@@ -33,7 +32,6 @@ import Certificate from "./pages/Certificate";
 import VerifyOtp from "./pages/VerifyOtp";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -67,6 +65,10 @@ function Layout() {
           <Route path="instructors" element={<AdminInstructors />} />
           <Route path="courses" element={<AdminCourses />} />
           <Route path="revenue" element={<AdminRevenue />} />
+          {/* Admin Managed Course Routes */}
+          <Route path="create-course" element={<CreateCourse />} />
+          <Route path="edit-course/:id" element={<EditCourse />} />
+          <Route path="add-lesson/:id" element={<CreateLesson />} />
         </Route>
 
         {/* Instructor Protected Routes */}
@@ -75,11 +77,9 @@ function Layout() {
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="edit-course/:id" element={<EditCourse />} />
           <Route path="add-lesson/:id" element={<CreateLesson />} />
-        
-        
         </Route>
 
-        {/*  Protected Routes (User) */}
+        {/* User Protected Routes */}
         <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
         <Route path="/course/:id" element={<ProtectedRoute><CourseDetails /></ProtectedRoute>} />
         <Route path="/my-courses" element={<ProtectedRoute><MyCourses /></ProtectedRoute>} />
