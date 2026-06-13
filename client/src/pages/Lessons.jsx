@@ -90,6 +90,7 @@ function Lessons() {
       Swal.fire({ title: "Review Added! ⭐", icon: "success" });
       setComment("");
     } catch (error) {
+      console.log(error);
       Swal.fire({ title: "Review Failed", icon: "error" });
     }
   };
@@ -131,7 +132,7 @@ function Lessons() {
               <div className="flex flex-wrap gap-4">
                 {lesson.pdf && (
                   <a
-                    // ഇവിടെയാണ് മാറ്റം വരുത്തിയത്:
+                    
                     href={lesson.pdf.startsWith('http') ? lesson.pdf : `${API}/uploads/${lesson.pdf}`}
                     target="_blank"
                     rel="noopener noreferrer"
