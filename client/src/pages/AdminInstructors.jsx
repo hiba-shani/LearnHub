@@ -69,6 +69,7 @@ function AdminInstructors() {
   useEffect(() => {
 
     fetchInstructors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
 
   }, [page]);
 

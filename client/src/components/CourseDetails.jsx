@@ -12,6 +12,7 @@ function CourseDetails() {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const navigate = useNavigate();
+
   const API = import.meta.env.VITE_API_URL;
 
   const fetchCourse = async () => {
@@ -37,7 +38,7 @@ function CourseDetails() {
     }
   };
 
-  //  ADDED AUTHORIZATION HEADER TO FETCH REVIEWS
+  //  FETCH REVIEWS
   const fetchReviews = async () => {
     try {
       const res = await axios.get(`${API}/api/courses/${id}/reviews`, {
