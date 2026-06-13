@@ -99,7 +99,7 @@ function AdminCourses() {
                 <td className="p-4 font-semibold text-indigo-600">₹{course.price}</td>
                 <td className="p-4">
                   <div className="flex justify-center gap-2">
-                    <button onClick={() => navigate(`/course/${course._id}`)} className="bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-indigo-600">View</button>
+                    <button onClick={() => navigate(`/admin/course-details/${course._id}`)} className="bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-indigo-600">View</button>
                     <button onClick={() => navigate(`/admin/edit-course/${course._id}`)} className="bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-600">Edit</button>
                     <button onClick={() => navigate(`/admin/add-lesson/${course._id}`)} className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700">Lesson+</button>
                     <button onClick={() => deleteCourse(course._id)} className="bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-700">Delete</button>

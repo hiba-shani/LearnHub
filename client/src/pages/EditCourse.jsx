@@ -102,12 +102,23 @@ function EditCourse() {
         </div>
 
         {/* Image Handling */}
-        <div className="flex flex-col space-y-2">
-          <label className="text-sm font-semibold text-gray-600">Current Cover:</label>
-          {currentImage && <img src={`${API}/uploads/${currentImage}`} alt="Course" className="w-32 h-20 object-cover rounded shadow" />}
-          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} className="text-sm border p-2 w-full rounded" />
-        </div>
-
+        {/* Image Handling */}
+<div className="flex flex-col space-y-2">
+  <label className="text-sm font-semibold text-gray-600">Current Cover:</label>
+  {currentImage && (
+    <img 
+      src={currentImage.startsWith('http') ? currentImage : `${API}/uploads/${currentImage}`} 
+      alt="Course" 
+      className="w-32 h-20 object-cover rounded shadow" 
+    />
+  )}
+  <input 
+    type="file" 
+    accept="image/*" 
+    onChange={(e) => setImage(e.target.files[0])} 
+    className="text-sm border p-2 w-full rounded" 
+  />
+</div>
         <button type="submit" disabled={loading} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition mt-4">
           {loading ? "Updating..." : "Update Course"}
         </button>
