@@ -69,7 +69,7 @@ function Layout() {
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="edit-course/:id" element={<EditCourse />} />
           <Route path="add-lesson/:id" element={<CreateLesson />} />
-           <Route path="/course/:id" element={<CourseDetails />} />
+           <Route path="course-details/:id" element={<CourseDetails />} />
         </Route>
 
         {/* Instructor Protected Routes */}
