@@ -64,7 +64,7 @@ function AdminCourses() {
           <p className="text-gray-500">Manage all courses and course content</p>
         </div>
         <button
-          onClick={() => navigate("/create-course")}
+          onClick={() => navigate("/admin/create-course")}
           className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-md"
         >
           + Create Course
@@ -87,7 +87,11 @@ function AdminCourses() {
             {courses.map((course) => (
               <tr key={course._id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                 <td className="p-4">
-                  <img src={course.image} alt={course.title} className="w-20 h-12 object-cover rounded-lg border" />
+                  <img 
+                    src={course.image.startsWith('http') ? course.image : `${API}/uploads/${course.image}`} 
+                    alt={course.title} 
+                    className="w-20 h-12 object-cover rounded-lg border" 
+                  />
                 </td>
                 <td className="p-4 font-medium text-gray-800">{course.title}</td>
                 <td className="p-4 text-gray-600">{course.instructor?.name || "N/A"}</td>
@@ -96,8 +100,8 @@ function AdminCourses() {
                 <td className="p-4">
                   <div className="flex justify-center gap-2">
                     <button onClick={() => navigate(`/course/${course._id}`)} className="bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-indigo-600">View</button>
-                    <button onClick={() => navigate(`/edit-course/${course._id}`)} className="bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-600">Edit</button>
-                    <button onClick={() => navigate(`/add-lesson/${course._id}`)} className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700">Lesson+</button>
+                    <button onClick={() => navigate(`/admin/edit-course/${course._id}`)} className="bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-600">Edit</button>
+                    <button onClick={() => navigate(`/admin/add-lesson/${course._id}`)} className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700">Lesson+</button>
                     <button onClick={() => deleteCourse(course._id)} className="bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-700">Delete</button>
                   </div>
                 </td>
