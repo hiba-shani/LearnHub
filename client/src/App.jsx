@@ -9,11 +9,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyCourses from "./pages/MyCourses";
 
-// Layouts
+
 import AdminLayout from "./components/AdminLayout";
 import InstructorLayout from "./components/InstructorLayout";
 
-// Pages
+
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminInstructors from "./pages/AdminInstructors";
@@ -79,7 +79,7 @@ function Layout() {
         
         </Route>
 
-        {/* Other Protected Routes (User) */}
+        {/*  Protected Routes (User) */}
         <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
         <Route path="/course/:id" element={<ProtectedRoute><CourseDetails /></ProtectedRoute>} />
         <Route path="/my-courses" element={<ProtectedRoute><MyCourses /></ProtectedRoute>} />
